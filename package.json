@@ -1,0 +1,19 @@
+{
+  "name": "dual-n-back",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "start": "concurrently \"npm -w api run start:dev\" \"npm -w frontend run dev\""
+  },
+  "workspaces": [
+    "api",
+    "frontend",
+    "types"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}
