@@ -21,11 +21,11 @@ export function PreparationPage() {
   const changeExperimenteeId = () => {
     navigate(`/`)
   }
-  const soundPlayerCallback = () => {
+  const setAudioPlayed = () => {
     setPlayedTestAudio(true)
   }
   const startGame = () => {
-    alert('Funktion steht noch nicht zur Verfügung.')
+    navigate(`/game?id=${experimenteeId}`)
   }
 
   return (
@@ -51,7 +51,7 @@ export function PreparationPage() {
           <SoundPlayer
             buttonText={'Test-Ton abspielen'}
             soundFile={BahnSound}
-            callback={soundPlayerCallback}
+            callback={setAudioPlayed}
           />
         </div>
         <button
