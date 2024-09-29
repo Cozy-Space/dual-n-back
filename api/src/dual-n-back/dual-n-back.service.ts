@@ -1,7 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { Block } from './models/block.model';
-import { Trial } from './models/trial.model';
 import { ConfigService } from '../config/config.service';
+import { Block, Trial } from 'types';
 
 @Injectable()
 export class DualNBackService {
