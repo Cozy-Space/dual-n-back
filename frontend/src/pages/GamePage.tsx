@@ -41,7 +41,7 @@ export function GamePage() {
     if (timeState === 'fixation') {
       setTimeout(() => {
         setTimeState('queue')
-      }, currentTrial.ms_vision_time)
+      }, currentTrial.ms_fixation_time)
       return
     }
 
@@ -49,7 +49,7 @@ export function GamePage() {
       setTimeout(() => {
         setTimeState('fixation')
         setCurrentTrialIndex(currentTrialIndex + 1)
-      }, currentTrial.ms_fixation_time)
+      }, currentTrial.ms_vision_time)
       return
     }
   }, [currentTrialIndex, currentTrial, timeState])
@@ -79,7 +79,7 @@ export function GamePage() {
           }}
         />
         <Matrix
-          activeId={timeState === 'fixation' ? currentTrial?.vision : undefined}
+          activeId={timeState === 'queue' ? currentTrial?.vision : undefined}
         />
         <div>
           <button
