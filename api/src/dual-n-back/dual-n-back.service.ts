@@ -93,11 +93,13 @@ export class DualNBackService {
 
   private createHitArray(hits: number, n: number): boolean[] {
     const baseAmountOfTrials = this.configService.get('base_amount_of_trials');
-    const hitArray = Array.from({ length: baseAmountOfTrials }, () => false);
+    const hitArray = Array.from({ length: baseAmountOfTrials }, () => false); // none of the trials are hits
+    // set given amount of hits
     for (let i = 0; i < hits; i++) {
       hitArray[i] = true;
     }
-    hitArray.sort(() => Math.random() - 0.5);
+    hitArray.sort(() => Math.random() - 0.5); // shuffle the hits
+    // add n non-hits to the beginning of the array to match the array length
     for (let i = 0; i < n; i++) {
       hitArray.splice(0, 0, false);
     }
