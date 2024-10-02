@@ -14,19 +14,18 @@ export class DualNBackService {
       this.configService.get('base_amount_of_trials') *
         this.configService.get('hit_percentage'),
     );
-    this.logger.log(`Creating block with ${hits} hits`);
 
+    this.logger.log(`Creating block with ${hits} hits`);
     const trials: Trial[] = this.createTrials(n);
 
-    do {
-      this.logger.log(`Ensuring ${hits} hits for vision`);
-      this.hitifyTrials(trials, 'vision', hits, n);
-    } while (trials.filter((trial) => trial.f_vision_correct).length !== hits);
+    this.logger.log(`Ensuring ${hits} hits for vision`);
+    this.hitifyTrials(trials, 'vision', hits, n);
 
-    do {
-      this.logger.log(`Ensuring ${hits} hits for sound`);
-      this.hitifyTrials(trials, 'sound', hits, n);
-    } while (trials.filter((trial) => trial.f_sound_correct).length !== hits);
+    this.logger.log(`shuffling vision images`);
+    this.addRandomVisionImages(trials);
+
+    this.logger.log(`Ensuring ${hits} hits for sound`);
+    this.hitifyTrials(trials, 'sound', hits, n);
 
     return {
       n,
@@ -40,7 +39,11 @@ export class DualNBackService {
     hits: number,
     n: number,
   ): void {
-    const hitArray = this.createHitArray(hits, n);
+    const hitArray = this.createHitArray(
+      this.configService.get('base_amount_of_trials'),
+      n,
+      hits,
+    );
 
     for (let i = 0; i < trials.length; i++) {
       const isHit = hitArray[i];
@@ -73,17 +76,28 @@ export class DualNBackService {
     return {
       sound: 0,
       f_sound_correct: false,
-      vision: 0,
+      vision_position: 0,
+      vision_image: 0,
       f_vision_correct: false,
       ms_vision_time: this.configService.get('ms_vision_time'),
       ms_fixation_time: this.configService.get('ms_fixation_time'),
     };
   }
 
-  private getExcludedRandomNumber(
-    excluded: number | undefined,
-    max: number,
-  ): number {
+  private addRandomVisionImages(trials: Trial[]): void {
+    const visionImages = Array.from(
+      { length: this.configService.get('image_count') },
+      (_, i) => i,
+    );
+    visionImages.sort(() => Math.random() - 0.5);
+
+    for (let i = 0; i < trials.length; i++) {
+      trials[i].vision_image =
+        visionImages[i % this.configService.get('image_count')];
+    }
+  }
+
+  getExcludedRandomNumber(excluded: number | undefined, max: number): number {
     let random = Math.floor(Math.random() * max);
     while (random === excluded) {
       random = Math.floor(Math.random() * max);
@@ -91,8 +105,13 @@ export class DualNBackService {
     return random;
   }
 
-  private createHitArray(hits: number, n: number): boolean[] {
-    const baseAmountOfTrials = this.configService.get('base_amount_of_trials');
+  createHitArray(
+    baseAmountOfTrials: number = this.configService.get(
+      'base_amount_of_trials',
+    ),
+    n: number,
+    hits: number,
+  ): boolean[] {
     const hitArray = Array.from({ length: baseAmountOfTrials }, () => false); // none of the trials are hits
     // set given amount of hits
     for (let i = 0; i < hits; i++) {

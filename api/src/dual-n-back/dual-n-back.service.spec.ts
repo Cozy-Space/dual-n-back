@@ -14,6 +14,7 @@ const testCases = [
       hit_percentage: 0.3,
       vision_count: 16,
       sound_count: 16,
+      image_count: 20,
     },
     n: 1,
     type: 'vision',
@@ -24,6 +25,7 @@ const testCases = [
       hit_percentage: 0.3,
       vision_count: 16,
       sound_count: 16,
+      image_count: 40,
     },
     n: 2,
     type: 'sound',
@@ -34,6 +36,7 @@ const testCases = [
       hit_percentage: 0.7,
       vision_count: 200,
       sound_count: 16,
+      image_count: 2,
     },
     n: 5,
     type: 'vision',
@@ -44,6 +47,7 @@ const testCases = [
       hit_percentage: 0.3,
       vision_count: 16,
       sound_count: 16,
+      image_count: 21,
     },
     n: 1,
     type: 'sound',
@@ -145,6 +149,48 @@ describe('DualNBackService', () => {
           );
         }
       }
+    });
+
+    it('should return a block, where every visual image is not repeating itself', () => {
+      const block = service.createBlock(n);
+
+      const visualImages = block.trials.map((trial) => trial.vision_image);
+
+      console.log(visualImages);
+
+      for (let i = 0; i < visualImages.length - 1; i++) {
+        expect(visualImages[i]).not.toBe(visualImages[i + 1]);
+      }
+    });
+  });
+
+  describe.each(testCases)('utils', ({ config, n }) => {
+    it(`should create an hitArray with ${config.base_amount_of_trials} + ${n} elements`, () => {
+      const hitArray = service.createHitArray(
+        config.base_amount_of_trials,
+        n,
+        0,
+      );
+
+      expect(hitArray.length).toBe(config.base_amount_of_trials + n);
+    });
+    it(`should create an hitArray with exactly ${config.hit_percentage} hits`, () => {
+      const hits = Math.floor(
+        config.base_amount_of_trials * config.hit_percentage,
+      );
+      const hitArray = service.createHitArray(
+        config.base_amount_of_trials,
+        n,
+        hits,
+      );
+      expect(hitArray.filter((hit) => hit).length).toBe(hits);
+    });
+    it(`should return a random number, that is not the same as the excluded one`, () => {
+      const excluded = 5;
+      const max = 10;
+
+      const random = service.getExcludedRandomNumber(excluded, max);
+      expect(random).not.toBe(excluded);
     });
   });
 });

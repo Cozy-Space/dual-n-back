@@ -74,12 +74,14 @@ export function GamePage() {
             timeState,
             n,
             blockLength: data?.trials.length,
-            visionBlock: currentTrial?.vision,
+            visionBlock: currentTrial?.vision_position,
             shouldClickVision: currentTrial?.f_vision_correct ? 'yes' : 'no'
           }}
         />
         <Matrix
-          activeId={timeState === 'queue' ? currentTrial?.vision : undefined}
+          activeId={
+            timeState === 'queue' ? currentTrial?.vision_position : undefined
+          }
         />
         <div>
           <button

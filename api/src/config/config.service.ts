@@ -9,6 +9,7 @@ export class ConfigService {
     sound_count: 16,
     ms_vision_time: 1000,
     ms_fixation_time: 3000,
+    image_count: 20,
   };
 
   public get(key: string): number {
