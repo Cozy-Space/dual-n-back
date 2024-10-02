@@ -18,15 +18,14 @@ export class DualNBackService {
 
     const trials: Trial[] = this.createTrials(n);
 
-    this.logger.log(`Ensuring ${hits} hits for vision`);
-
     do {
-      this.hitifyTrials(trials, 'vision', n);
+      this.logger.log(`Ensuring ${hits} hits for vision`);
+      this.hitifyTrials(trials, 'vision', hits, n);
     } while (trials.filter((trial) => trial.f_vision_correct).length !== hits);
 
-    this.logger.log(`Ensuring ${hits} hits for sound`);
     do {
-      this.hitifyTrials(trials, 'sound', n);
+      this.logger.log(`Ensuring ${hits} hits for sound`);
+      this.hitifyTrials(trials, 'sound', hits, n);
     } while (trials.filter((trial) => trial.f_sound_correct).length !== hits);
 
     return {
@@ -38,11 +37,13 @@ export class DualNBackService {
   private hitifyTrials(
     trials: Trial[],
     type: 'sound' | 'vision',
+    hits: number,
     n: number,
   ): void {
+    const hitArray = this.createHitArray(hits, n);
+
     for (let i = 0; i < trials.length; i++) {
-      const isHit =
-        i < n ? false : this.isHit(this.configService.get('hit_percentage'));
+      const isHit = hitArray[i];
 
       trials[i][type] = isHit
         ? trials[i - n][type]
@@ -68,7 +69,7 @@ export class DualNBackService {
     return trials;
   }
 
-  private createBaseTrial() {
+  private createBaseTrial(): Trial {
     return {
       sound: 0,
       f_sound_correct: false,
@@ -90,7 +91,16 @@ export class DualNBackService {
     return random;
   }
 
-  private isHit(percentage: number): boolean {
-    return Math.random() < percentage;
+  private createHitArray(hits: number, n: number): boolean[] {
+    const baseAmountOfTrials = this.configService.get('base_amount_of_trials');
+    const hitArray = Array.from({ length: baseAmountOfTrials }, () => false);
+    for (let i = 0; i < hits; i++) {
+      hitArray[i] = true;
+    }
+    hitArray.sort(() => Math.random() - 0.5);
+    for (let i = 0; i < n; i++) {
+      hitArray.splice(0, 0, false);
+    }
+    return hitArray;
   }
 }
