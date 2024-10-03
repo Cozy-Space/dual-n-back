@@ -1,10 +1,11 @@
 import { Dev } from 'components/Dev'
 import { useBlockQuery } from 'queries/BlockQuery'
-import { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Trial } from 'types'
 import { CenteringContainer } from '../components/CenteringContainer'
 import { Matrix } from '../components/Matrix'
+import { EyeIcon, SpeakerWaveIcon } from '@heroicons/react/24/solid'
 
 type TimeState = 'fixation' | 'queue'
 
@@ -26,8 +27,6 @@ export function GamePage() {
     if (currentTrialIndex === undefined || !data) return undefined
     return data.trials[currentTrialIndex]
   }, [currentTrialIndex, data])
-
-  console.log(currentTrial, currentTrialIndex)
 
   useEffect(() => {
     if (!experimenteeId) {
@@ -62,11 +61,7 @@ export function GamePage() {
 
   return (
     <CenteringContainer>
-      <div
-        className={
-          'flex h-screen w-screen flex-col items-center justify-center'
-        }
-      >
+      <div className={'h-screen w-screen'}>
         {isLoading && <div>Loading...</div>}
         <Dev
           values={{
@@ -78,20 +73,34 @@ export function GamePage() {
             shouldClickVision: currentTrial?.f_vision_correct ? 'yes' : 'no'
           }}
         />
-        <Matrix
-          activeId={
-            timeState === 'queue' ? currentTrial?.vision_position : undefined
-          }
-        />
-        <div>
-          <button
-            className={
-              'mt-4 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600'
+        <div
+          className={'flex size-full flex-col items-center justify-center py-4'}
+        >
+          <Matrix
+            activeId={
+              timeState === 'queue' ? currentTrial?.vision_position : undefined
             }
-            onClick={() => void refetch()}
-          >
-            bla
-          </button>
+          />
+          <div className={''}>
+            <button
+              className={
+                'mr-8 mt-4 cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
+              }
+              onClick={() => void refetch()}
+            >
+              <EyeIcon className={'size-10 cursor-pointer text-white'} />
+            </button>
+            <button
+              className={
+                'ml-8 mt-4 cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
+              }
+              onClick={() => void refetch()}
+            >
+              <SpeakerWaveIcon
+                className={'size-10 cursor-pointer text-white'}
+              />
+            </button>
+          </div>
         </div>
       </div>
     </CenteringContainer>
