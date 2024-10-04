@@ -14,7 +14,7 @@ const testCases = [
       hit_percentage: 0.3,
       vision_position_count: 16,
       sound_count: 16,
-      image_count: 20,
+      vision_image_count: 20,
     },
     n: 1,
     type: 'vision_position',
@@ -25,7 +25,7 @@ const testCases = [
       hit_percentage: 0.3,
       vision_position_count: 16,
       sound_count: 16,
-      image_count: 40,
+      vision_image_count: 40,
     },
     n: 2,
     type: 'sound',
@@ -36,7 +36,7 @@ const testCases = [
       hit_percentage: 0.7,
       vision_position_count: 200,
       sound_count: 16,
-      image_count: 2,
+      vision_image_count: 2,
     },
     n: 5,
     type: 'vision_position',
@@ -47,7 +47,7 @@ const testCases = [
       hit_percentage: 0.3,
       vision_position_count: 16,
       sound_count: 16,
-      image_count: 21,
+      vision_image_count: 21,
     },
     n: 1,
     type: 'sound',
@@ -140,7 +140,6 @@ describe('DualNBackService', () => {
 
     it(`should return trial, where an incorrect ${type} is not the same as the one n (${n}) steps back`, () => {
       const block = service.createBlock(n);
-      console.log(block.trials);
 
       for (const [i, trial] of block.trials.entries()) {
         if (i < n) {
@@ -150,7 +149,6 @@ describe('DualNBackService', () => {
         const correctField =
           type === 'vision_position' ? 'f_vision_correct' : 'f_sound_correct';
         if (!trial[correctField]) {
-          console.log(i, trial, block.trials[i - n]);
           expect(trial[type]).not.toBe(block.trials[i - n][type]);
         }
       }
@@ -160,8 +158,6 @@ describe('DualNBackService', () => {
       const block = service.createBlock(n);
 
       const visualImages = block.trials.map((trial) => trial.vision_image);
-
-      console.log(visualImages);
 
       for (let i = 0; i < visualImages.length - 1; i++) {
         expect(visualImages[i]).not.toBe(visualImages[i + 1]);

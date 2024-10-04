@@ -99,11 +99,12 @@ export function GamePage() {
       <div className={'h-screen w-screen'}>
         <Dev
           values={{
+            n,
             currentTrialIndex: String(currentTrialIndex),
             gamePhase,
-            n,
             blockLength: data?.trials.length,
-            visionBlock: currentTrial?.vision_position,
+            visionPosition: currentTrial?.vision_position,
+            imageContent: (currentTrial?.vision_image ?? -100) + 1,
             shouldClickVision: currentTrial?.f_vision_correct ? (
               <DevText truthy={true} />
             ) : (
@@ -123,6 +124,9 @@ export function GamePage() {
           <Matrix
             activeId={
               gamePhase === 'queue' ? currentTrial?.vision_position : undefined
+            }
+            imageId={
+              gamePhase === 'queue' ? currentTrial?.vision_image : undefined
             }
           />
           <div className={''}>

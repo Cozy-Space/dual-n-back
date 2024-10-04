@@ -86,14 +86,14 @@ export class DualNBackService {
 
   private addRandomVisionImages(trials: Trial[]): void {
     const visionImages = Array.from(
-      { length: this.configService.get('image_count') },
+      { length: this.configService.get('vision_image_count') },
       (_, i) => i,
     );
     visionImages.sort(() => Math.random() - 0.5);
 
     for (let i = 0; i < trials.length; i++) {
       trials[i].vision_image =
-        visionImages[i % this.configService.get('image_count')];
+        visionImages[i % this.configService.get('vision_image_count')];
     }
   }
 

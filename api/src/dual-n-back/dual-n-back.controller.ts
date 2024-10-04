@@ -9,6 +9,7 @@ export class DualNBackController {
   @Get('dual_n_back.get')
   getDualNBack(@Query('n') n: number) {
     this.logger.log(`Creating block for n=${n}`);
-    return this.dualNBackService.createBlock(+n);
+    const block = this.dualNBackService.createBlock(+n);
+    return block;
   }
 }
