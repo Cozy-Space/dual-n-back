@@ -8,10 +8,13 @@ import { Matrix } from '../components/Matrix'
 import { EyeIcon, SpeakerWaveIcon } from '@heroicons/react/24/solid'
 
 type GamePhase =
+  // occurs in the order of the enum
   | 'loading'
   | 'starting'
-  | 'fixation'
   | 'queue'
+  | 'user_can_react'
+  | 'feedback'
+  | 'wait_for_feedback_is_done'
   | 'block_finished'
 
 export function GamePage() {
@@ -19,6 +22,9 @@ export function GamePage() {
   const [searchParams] = useSearchParams()
   const experimenteeId = searchParams.get('id')
   const [n, setN] = useState<number>(1)
+  const [userReaction, setUserReaction] = useState<'none' | 'vision' | 'sound'>(
+    'none'
+  )
 
   const { data, status, refetch } = useBlockQuery(n)
 
@@ -56,15 +62,48 @@ export function GamePage() {
           setGamePhase('queue')
         }
         break
-      case 'fixation':
-        timeoutMs = currentTrial?.ms_fixation_time || 0
-        callback = () => {
-          setGamePhase('queue')
-        }
-        break
       case 'queue':
         timeoutMs = currentTrial?.ms_vision_time || 0
         callback = () => {
+          setGamePhase('user_can_react')
+        }
+        break
+      case 'user_can_react':
+        timeoutMs = currentTrial?.ms_fixation_time || 0
+        callback = () => {
+          setGamePhase('feedback')
+        }
+        break
+      case 'feedback':
+        timeoutMs = 1
+        callback = () => {
+          // give feedback to trial if possible
+          if (currentTrial && currentTrialIndex && currentTrialIndex > 0) {
+            if (userReaction === 'vision' && currentTrial?.f_vision_correct) {
+              console.log('Correct! (vision)')
+            } else if (
+              userReaction === 'sound' &&
+              currentTrial?.f_sound_correct
+            ) {
+              console.log('Correct! (sound)')
+            } else if (
+              userReaction === 'none' &&
+              !currentTrial?.f_vision_correct &&
+              !currentTrial?.f_sound_correct
+            ) {
+              console.log('Correct! (none)')
+            } else {
+              console.log('Incorrect!')
+            }
+          }
+          setUserReaction('none')
+          setGamePhase('wait_for_feedback_is_done')
+        }
+        break
+      case 'wait_for_feedback_is_done':
+        timeoutMs = 1200
+        callback = () => {
+          // proceed to next trial
           if (!data || currentTrialIndex === undefined) {
             return
           }
@@ -72,7 +111,7 @@ export function GamePage() {
             setGamePhase('block_finished')
           } else {
             setCurrentTrialIndex(currentTrialIndex + 1)
-            setGamePhase('fixation')
+            setGamePhase('queue')
           }
         }
         break
@@ -84,7 +123,6 @@ export function GamePage() {
         }
         break
     }
-
     setTimeout(callback, timeoutMs)
   }, [gamePhase])
 
@@ -115,7 +153,8 @@ export function GamePage() {
             ) : (
               <DevText truthy={false} />
             ),
-            queryStatus: status
+            queryStatus: status,
+            userReaction
           }}
         />
         <div
@@ -134,7 +173,7 @@ export function GamePage() {
               className={
                 'mr-8 mt-4 cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
               }
-              onClick={() => void refetch()}
+              onClick={() => setUserReaction('vision')}
             >
               <EyeIcon className={'size-10 cursor-pointer text-white'} />
             </button>
@@ -142,7 +181,7 @@ export function GamePage() {
               className={
                 'ml-8 mt-4 cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
               }
-              onClick={() => void refetch()}
+              onClick={() => setUserReaction('sound')}
             >
               <SpeakerWaveIcon
                 className={'size-10 cursor-pointer text-white'}
