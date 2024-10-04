@@ -7,7 +7,12 @@ import { CenteringContainer } from '../components/CenteringContainer'
 import { Matrix } from '../components/Matrix'
 import { EyeIcon, SpeakerWaveIcon } from '@heroicons/react/24/solid'
 
-type TimeState = 'fixation' | 'queue'
+type GamePhase =
+  | 'loading'
+  | 'starting'
+  | 'fixation'
+  | 'queue'
+  | 'block_finished'
 
 export function GamePage() {
   const navigate = useNavigate()
@@ -15,13 +20,13 @@ export function GamePage() {
   const experimenteeId = searchParams.get('id')
   const [n, setN] = useState<number>(1)
 
-  const { data, isLoading, status, refetch } = useBlockQuery(n)
+  const { data, status, refetch } = useBlockQuery(n)
 
   const [currentTrialIndex, setCurrentTrialIndex] = useState<
     number | undefined
   >(undefined)
 
-  const [timeState, setTimeState] = useState<TimeState | undefined>(undefined)
+  const [gamePhase, setGamePhase] = useState<GamePhase>('loading')
 
   const currentTrial = useMemo<Trial | undefined>(() => {
     if (currentTrialIndex === undefined || !data) return undefined
@@ -35,42 +40,72 @@ export function GamePage() {
   }, [])
 
   useEffect(() => {
-    if (!currentTrial || currentTrialIndex === undefined || !timeState) return
-
-    if (timeState === 'fixation') {
-      setTimeout(() => {
-        setTimeState('queue')
-      }, currentTrial.ms_fixation_time)
-      return
+    let timeoutMs: number
+    let callback: () => void
+    switch (gamePhase) {
+      case 'loading':
+        timeoutMs = 0
+        callback = () => {
+          console.log('loading')
+        }
+        break
+      case 'starting':
+        timeoutMs = 5000
+        callback = () => {
+          setCurrentTrialIndex(0)
+          setGamePhase('queue')
+        }
+        break
+      case 'fixation':
+        timeoutMs = currentTrial?.ms_fixation_time || 0
+        callback = () => {
+          setGamePhase('queue')
+        }
+        break
+      case 'queue':
+        timeoutMs = currentTrial?.ms_vision_time || 0
+        callback = () => {
+          if (!data || currentTrialIndex === undefined) {
+            return
+          }
+          if (currentTrialIndex === data.trials.length - 1) {
+            setGamePhase('block_finished')
+          } else {
+            setCurrentTrialIndex(currentTrialIndex + 1)
+            setGamePhase('fixation')
+          }
+        }
+        break
+      case 'block_finished':
+        timeoutMs = 5000
+        callback = () => {
+          setN(n + 1)
+          setGamePhase('loading')
+        }
+        break
     }
 
-    if (timeState === 'queue') {
-      setTimeout(() => {
-        setTimeState('fixation')
-        setCurrentTrialIndex(currentTrialIndex + 1)
-      }, currentTrial.ms_vision_time)
-      return
-    }
-  }, [currentTrialIndex, currentTrial, timeState])
+    setTimeout(callback, timeoutMs)
+  }, [gamePhase])
 
   useEffect(() => {
     if (status !== 'success') return
     setCurrentTrialIndex(0)
-    setTimeState('fixation')
+    setGamePhase('starting')
   }, [status])
 
   return (
     <CenteringContainer>
       <div className={'h-screen w-screen'}>
-        {isLoading && <div>Loading...</div>}
         <Dev
           values={{
             currentTrialIndex: String(currentTrialIndex),
-            timeState,
+            gamePhase,
             n,
             blockLength: data?.trials.length,
             visionBlock: currentTrial?.vision_position,
-            shouldClickVision: currentTrial?.f_vision_correct ? 'yes' : 'no'
+            shouldClickVision: currentTrial?.f_vision_correct ? 'yes' : 'no',
+            queryStatus: status
           }}
         />
         <div
@@ -78,7 +113,7 @@ export function GamePage() {
         >
           <Matrix
             activeId={
-              timeState === 'queue' ? currentTrial?.vision_position : undefined
+              gamePhase === 'queue' ? currentTrial?.vision_position : undefined
             }
           />
           <div className={''}>
