@@ -1,4 +1,4 @@
-import { Dev } from 'components/Dev'
+import { Dev, DevText } from 'components/Dev'
 import { useBlockQuery } from 'queries/BlockQuery'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -104,7 +104,16 @@ export function GamePage() {
             n,
             blockLength: data?.trials.length,
             visionBlock: currentTrial?.vision_position,
-            shouldClickVision: currentTrial?.f_vision_correct ? 'yes' : 'no',
+            shouldClickVision: currentTrial?.f_vision_correct ? (
+              <DevText truthy={true} />
+            ) : (
+              <DevText truthy={false} />
+            ),
+            shouldClickSound: currentTrial?.f_sound_correct ? (
+              <DevText truthy={true} />
+            ) : (
+              <DevText truthy={false} />
+            ),
             queryStatus: status
           }}
         />
