@@ -12,18 +12,18 @@ const testCases = [
     config: {
       base_amount_of_trials: 20,
       hit_percentage: 0.3,
-      vision_count: 16,
+      vision_position_count: 16,
       sound_count: 16,
       image_count: 20,
     },
     n: 1,
-    type: 'vision',
+    type: 'vision_position',
   },
   {
     config: {
       base_amount_of_trials: 20,
       hit_percentage: 0.3,
-      vision_count: 16,
+      vision_position_count: 16,
       sound_count: 16,
       image_count: 40,
     },
@@ -34,18 +34,18 @@ const testCases = [
     config: {
       base_amount_of_trials: 30,
       hit_percentage: 0.7,
-      vision_count: 200,
+      vision_position_count: 200,
       sound_count: 16,
       image_count: 2,
     },
     n: 5,
-    type: 'vision',
+    type: 'vision_position',
   },
   {
     config: {
       base_amount_of_trials: 20,
       hit_percentage: 0.3,
-      vision_count: 16,
+      vision_position_count: 16,
       sound_count: 16,
       image_count: 21,
     },
@@ -95,11 +95,11 @@ describe('DualNBackService', () => {
     it(`should return trials, where ${config.hit_percentage * 100} % of ${type} are correct`, () => {
       const block = service.createBlock(n);
 
-      const correctTrials = block.trials.filter(
-        (trial) => trial[`f_${type}_correct`],
-      );
+      const correctField =
+        type === 'vision_position' ? 'f_vision_correct' : 'f_sound_correct';
+      const correctTrials = block.trials.filter((trial) => trial[correctField]);
       const incorrectTrials = block.trials.filter(
-        (trial) => !trial[`f_${type}_correct`],
+        (trial) => !trial[correctField],
       );
 
       expect(correctTrials.length).toBe(
@@ -113,11 +113,13 @@ describe('DualNBackService', () => {
       );
     });
 
-    it(`should return trials, where the first correct ${type} ones index is at least n`, () => {
+    it(`should return trials, where the first correct ${type} ones index is at least n (${n})`, () => {
       const block = service.createBlock(n);
 
+      const correctField =
+        type === 'vision_position' ? 'f_vision_correct' : 'f_sound_correct';
       const firstVisualCorrectTrialIndex = block.trials.findIndex(
-        (trial) => trial[`f_${type}_correct`],
+        (trial) => trial[correctField],
       );
 
       expect(firstVisualCorrectTrialIndex).toBeGreaterThanOrEqual(n);
@@ -125,9 +127,10 @@ describe('DualNBackService', () => {
 
     it(`should return trials, where a correct ${type} ones ${type} is the as the one n steps back`, () => {
       const block = service.createBlock(n);
-
+      const correctField =
+        type === 'vision_position' ? 'f_vision_correct' : 'f_sound_correct';
       for (const trials of block.trials) {
-        if (trials[`f_${type}_correct`]) {
+        if (trials[correctField]) {
           expect(trials[type]).toBe(
             block.trials[block.trials.indexOf(trials) - n][type],
           );
@@ -135,18 +138,20 @@ describe('DualNBackService', () => {
       }
     });
 
-    it(`should return trial, where an incorrect ${type} ones ${type} is not the same as the one n steps back`, () => {
+    it(`should return trial, where an incorrect ${type} is not the same as the one n (${n}) steps back`, () => {
       const block = service.createBlock(n);
+      console.log(block.trials);
 
       for (const [i, trial] of block.trials.entries()) {
         if (i < n) {
           continue;
         }
 
-        if (!trial[`f_${type}_correct`]) {
-          expect(trial[type]).not.toBe(
-            block.trials[block.trials.indexOf(trial) - n][type],
-          );
+        const correctField =
+          type === 'vision_position' ? 'f_vision_correct' : 'f_sound_correct';
+        if (!trial[correctField]) {
+          console.log(i, trial, block.trials[i - n]);
+          expect(trial[type]).not.toBe(block.trials[i - n][type]);
         }
       }
     });
