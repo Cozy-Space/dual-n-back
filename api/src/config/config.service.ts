@@ -7,7 +7,7 @@ export class ConfigService {
     hit_percentage: 0.3,
     vision_image_count: 20,
     vision_position_count: 16,
-    sound_count: 16,
+    sound_count: 10,
     ms_vision_time: 1000,
     ms_fixation_time: 3000,
   };
