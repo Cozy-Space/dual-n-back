@@ -19,7 +19,7 @@ export class DualNBackService {
     const trials: Trial[] = this.createTrials(n);
 
     this.logger.log(`Ensuring ${hits} hits for vision`);
-    this.hitifyTrials(trials, 'vision', hits, n);
+    this.hitifyTrials(trials, 'vision_position', hits, n);
 
     this.logger.log(`shuffling vision images`);
     this.addRandomVisionImages(trials);
@@ -35,7 +35,7 @@ export class DualNBackService {
 
   private hitifyTrials(
     trials: Trial[],
-    type: 'sound' | 'vision',
+    type: 'sound' | 'vision_position',
     hits: number,
     n: number,
   ): void {
@@ -54,7 +54,7 @@ export class DualNBackService {
             trials[i - n]?.[type],
             this.configService.get(`${type}_count`),
           );
-      trials[i][`f_${type}_correct`] = isHit;
+      trials[i][this.mapTypeToCorrectField(type)] = isHit;
     }
   }
 
@@ -123,5 +123,14 @@ export class DualNBackService {
       hitArray.splice(0, 0, false);
     }
     return hitArray;
+  }
+
+  private mapTypeToCorrectField(type: 'sound' | 'vision_position'): string {
+    switch (type) {
+      case 'sound':
+        return 'f_sound_correct';
+      case 'vision_position':
+        return 'f_vision_correct';
+    }
   }
 }
