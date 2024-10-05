@@ -6,6 +6,7 @@ import { Trial } from 'types'
 import { CenteringContainer } from '../components/CenteringContainer'
 import { Matrix } from '../components/Matrix'
 import { EyeIcon, SpeakerWaveIcon } from '@heroicons/react/24/solid'
+import { Sound } from '../components/Sound'
 
 type GamePhase =
   // occurs in the order of the enum
@@ -25,13 +26,10 @@ export function GamePage() {
   const [userReaction, setUserReaction] = useState<'none' | 'vision' | 'sound'>(
     'none'
   )
-
   const { data, status, refetch } = useBlockQuery(n)
-
   const [currentTrialIndex, setCurrentTrialIndex] = useState<
     number | undefined
   >(undefined)
-
   const [gamePhase, setGamePhase] = useState<GamePhase>('loading')
 
   const currentTrial = useMemo<Trial | undefined>(() => {
@@ -167,6 +165,9 @@ export function GamePage() {
             imageId={
               gamePhase === 'queue' ? currentTrial?.vision_image : undefined
             }
+          />
+          <Sound
+            soundId={gamePhase === 'queue' ? currentTrial?.sound : undefined}
           />
           <div className={''}>
             <button
