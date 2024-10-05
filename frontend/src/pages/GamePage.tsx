@@ -91,7 +91,18 @@ export function GamePage() {
             ) {
               console.log('Correct! (none)')
             } else {
-              console.log('Incorrect!')
+              let shouldHavePressed: string
+              switch (true) {
+                case currentTrial?.f_vision_correct:
+                  shouldHavePressed = 'vision'
+                  break
+                case currentTrial?.f_sound_correct:
+                  shouldHavePressed = 'sound'
+                  break
+                default:
+                  shouldHavePressed = 'none'
+              }
+              console.log('Incorrect! Should have pressed', shouldHavePressed)
             }
           }
           setUserReaction('none')

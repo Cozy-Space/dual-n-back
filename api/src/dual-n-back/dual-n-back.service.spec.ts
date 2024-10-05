@@ -33,7 +33,7 @@ const testCases = [
   {
     config: {
       base_amount_of_trials: 30,
-      hit_percentage: 0.7,
+      hit_percentage: 0.5,
       vision_position_count: 200,
       sound_count: 16,
       vision_image_count: 2,
@@ -75,7 +75,7 @@ describe('DualNBackService', () => {
       });
     });
 
-    it('should return a block with block_base_size + n trials', () => {
+    it(`should return a block with base_amount_of_trials(${config.base_amount_of_trials}) + n(${n}) trials`, () => {
       const block = service.createBlock(n);
 
       expect(block.trials.length).toBe(
@@ -165,7 +165,7 @@ describe('DualNBackService', () => {
     });
   });
 
-  describe.each(testCases)('utils', ({ config, n }) => {
+  describe.each(testCases)('utils', ({ config, n, type }) => {
     it(`should create an hitArray with ${config.base_amount_of_trials} + ${n} elements`, () => {
       const hitArray = service.createHitArray(
         config.base_amount_of_trials,
@@ -184,7 +184,21 @@ describe('DualNBackService', () => {
         n,
         hits,
       );
-      expect(hitArray.filter((hit) => hit).length).toBe(hits);
+      expect(hitArray.filter((hit) => hit === type).length).toBe(hits);
+    });
+    it(`should return an array where each element is either 'sound', 'vision_position' or 'none'`, () => {
+      const hits = Math.floor(
+        config.base_amount_of_trials * config.hit_percentage,
+      );
+      const hitArray = service.createHitArray(
+        config.base_amount_of_trials,
+        n,
+        hits,
+      );
+
+      hitArray.forEach((hit) => {
+        expect(['sound', 'vision_position', 'none']).toContain(hit);
+      });
     });
     it(`should return a random number, that is not the same as the excluded one`, () => {
       const excluded = 5;
