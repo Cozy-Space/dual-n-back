@@ -1,4 +1,11 @@
-import { Controller, Get, Inject, Logger, Query } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Inject,
+  Logger,
+  Query,
+} from '@nestjs/common';
 import { DualNBackService } from './dual-n-back.service';
 
 @Controller()
@@ -8,8 +15,10 @@ export class DualNBackController {
 
   @Get('dual_n_back.get')
   getDualNBack(@Query('n') n: number) {
+    if (n === undefined || n === 0) {
+      throw new BadRequestException('n is required');
+    }
     this.logger.log(`Creating block for n=${n}`);
-    const block = this.dualNBackService.createBlock(+n);
-    return block;
+    return this.dualNBackService.createBlock(+n);
   }
 }

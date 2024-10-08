@@ -10,6 +10,8 @@ export class ConfigService {
     sound_count: 10,
     ms_vision_time: 1000,
     ms_fixation_time: 3000,
+    consecutive_right_hits_for_upgrade: 3,
+    consecutive_wrong_hits_for_downgrade: 5,
   };
 
   public get(key: string): number {
