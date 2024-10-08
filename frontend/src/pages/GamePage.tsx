@@ -2,7 +2,7 @@ import { Dev, DevText } from 'components/Dev'
 import { useBlockQuery } from 'queries/BlockQuery'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Trial } from 'types'
+import { Reaction, Trial } from 'types'
 import { CenteringContainer } from '../components/CenteringContainer'
 import { Matrix } from '../components/Matrix'
 import { EyeIcon, SpeakerWaveIcon } from '@heroicons/react/24/solid'
@@ -31,6 +31,8 @@ export function GamePage() {
     number | undefined
   >(undefined)
   const [gamePhase, setGamePhase] = useState<GamePhase>('loading')
+
+  const [trialCorrectness, setTrialCorrectness] = useState<Reaction[]>([])
 
   const currentTrial = useMemo<Trial | undefined>(() => {
     if (currentTrialIndex === undefined || !data) return undefined
@@ -76,20 +78,32 @@ export function GamePage() {
         timeoutMs = 1
         callback = () => {
           // give feedback to trial if possible
-          if (currentTrial && currentTrialIndex && currentTrialIndex > 0) {
+          if (currentTrial !== undefined && currentTrialIndex !== undefined) {
             if (userReaction === 'vision' && currentTrial?.f_vision_correct) {
               console.log('Correct! (vision)')
+              setTrialCorrectness((prevState) => [
+                ...prevState,
+                { correct: true }
+              ])
             } else if (
               userReaction === 'sound' &&
               currentTrial?.f_sound_correct
             ) {
               console.log('Correct! (sound)')
+              setTrialCorrectness((prevState) => [
+                ...prevState,
+                { correct: true }
+              ])
             } else if (
               userReaction === 'none' &&
               !currentTrial?.f_vision_correct &&
               !currentTrial?.f_sound_correct
             ) {
               console.log('Correct! (none)')
+              setTrialCorrectness((prevState) => [
+                ...prevState,
+                { correct: true }
+              ])
             } else {
               let shouldHavePressed: string
               switch (true) {
@@ -103,6 +117,10 @@ export function GamePage() {
                   shouldHavePressed = 'none'
               }
               console.log('Incorrect! Should have pressed', shouldHavePressed)
+              setTrialCorrectness((prevState) => [
+                ...prevState,
+                { correct: false }
+              ])
             }
           }
           setUserReaction('none')
@@ -163,7 +181,10 @@ export function GamePage() {
               <DevText truthy={false} />
             ),
             queryStatus: status,
-            userReaction
+            userReaction,
+            trialCorrectness: trialCorrectness.map((r) =>
+              r.correct ? '✅' : '❌'
+            )
           }}
         />
         <div
@@ -198,6 +219,14 @@ export function GamePage() {
               <SpeakerWaveIcon
                 className={'size-10 cursor-pointer text-white'}
               />
+            </button>
+            <button
+              className={
+                'ml-16 mt-4 cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
+              }
+              onClick={() => navigate('/')}
+            >
+              RESET
             </button>
           </div>
         </div>
