@@ -13,7 +13,7 @@ export function IdInputPage() {
     if (paramId) {
       navigate(`/prepare?id=${paramId}`)
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -28,7 +28,7 @@ export function IdInputPage() {
             htmlFor="userId"
             className="mb-2 block text-sm font-bold text-gray-700"
           >
-            Probandennummer:
+            Probanden-ID:
           </label>
           <input
             type="text"

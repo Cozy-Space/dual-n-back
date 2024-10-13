@@ -16,7 +16,7 @@ export function PreparationPage() {
     if (!experimenteeId) {
       navigate(`/`)
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const changeExperimenteeId = () => {
     navigate(`/`)
@@ -32,13 +32,13 @@ export function PreparationPage() {
     <CenteringContainer>
       <Card>
         <span className={'mb-2 block text-sm'}>
-          Bitte überprüfen Sie Ihre <b>Probandennummer</b> und stellen Sie die{' '}
+          Bitte überprüfen Sie Ihre <b>Probanden-ID</b> und stellen Sie die{' '}
           <b>Lautstärke</b> so ein, dass Sie den Test-Ton gut hören können.
         </span>
         <div className={'my-8'}>
           <div className={'flex'}>
             <span className={'mb-2 block text-sm'}>
-              Probandennummer: {experimenteeId}
+              Probanden-ID: {experimenteeId}
             </span>
             <PencilIcon
               onClick={changeExperimenteeId}
@@ -61,7 +61,7 @@ export function PreparationPage() {
             'w-full rounded-md bg-blue-500 px-4 py-2 text-sm text-white transition duration-1000 hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-300'
           }
         >
-          Die Probandennummer ist korrekt, die Laustärke ist eingestellt und ich
+          Die Probanden-ID ist korrekt, die Laustärke ist eingestellt und ich
           bin bereit mit dem Spiel zu beginnen
         </button>
       </Card>

@@ -7,9 +7,10 @@ import { CenteringContainer } from '../components/CenteringContainer'
 import { Matrix } from '../components/Matrix'
 import { EyeIcon, SpeakerWaveIcon } from '@heroicons/react/24/solid'
 import { Sound } from '../components/Sound'
+import { useNQuery } from '../queries/UseNQuery'
 
+// occurs in the order of the enum
 type GamePhase =
-  // occurs in the order of the enum
   | 'loading'
   | 'starting'
   | 'queue'
@@ -18,32 +19,44 @@ type GamePhase =
   | 'wait_for_feedback_is_done'
   | 'block_finished'
 
+type ReactionType = 'none' | 'vision' | 'sound'
+
 export function GamePage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const experimenteeId = searchParams.get('id')
   const [n, setN] = useState<number>(1)
-  const [userReaction, setUserReaction] = useState<'none' | 'vision' | 'sound'>(
-    'none'
-  )
-  const { data, status, refetch } = useBlockQuery(n)
+  const [userReaction, setUserReaction] = useState<ReactionType>('none')
+  const {
+    data: blockData,
+    status: blockStatus,
+    refetch: blockRefetch
+  } = useBlockQuery(n)
+
   const [currentTrialIndex, setCurrentTrialIndex] = useState<
     number | undefined
   >(undefined)
-  const [gamePhase, setGamePhase] = useState<GamePhase>('loading')
 
+  const [gamePhase, setGamePhase] = useState<GamePhase>('loading')
   const [trialCorrectness, setTrialCorrectness] = useState<Reaction[]>([])
 
+  const [enableNQuery, setEnableNQuery] = useState(false)
+  const { data: nData, status: nStatus } = useNQuery(
+    n,
+    trialCorrectness,
+    enableNQuery
+  )
+
   const currentTrial = useMemo<Trial | undefined>(() => {
-    if (currentTrialIndex === undefined || !data) return undefined
-    return data.trials[currentTrialIndex]
-  }, [currentTrialIndex, data])
+    if (currentTrialIndex === undefined || !blockData) return undefined
+    return blockData.trials[currentTrialIndex]
+  }, [currentTrialIndex, blockData])
 
   useEffect(() => {
     if (!experimenteeId) {
       navigate(`/`)
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     let timeoutMs: number
@@ -52,7 +65,9 @@ export function GamePage() {
       case 'loading':
         timeoutMs = 0
         callback = () => {
-          console.log('loading')
+          console.log('Gamephase: loading')
+          setTrialCorrectness([])
+          blockRefetch()
         }
         break
       case 'starting':
@@ -131,10 +146,10 @@ export function GamePage() {
         timeoutMs = 1200
         callback = () => {
           // proceed to next trial
-          if (!data || currentTrialIndex === undefined) {
+          if (!blockData || currentTrialIndex === undefined) {
             return
           }
-          if (currentTrialIndex === data.trials.length - 1) {
+          if (currentTrialIndex === blockData.trials.length - 1) {
             setGamePhase('block_finished')
           } else {
             setCurrentTrialIndex(currentTrialIndex + 1)
@@ -145,19 +160,26 @@ export function GamePage() {
       case 'block_finished':
         timeoutMs = 5000
         callback = () => {
-          setN(n + 1)
-          setGamePhase('loading')
+          setEnableNQuery(true)
+          // nQuery will trigger the next block automatically
         }
         break
     }
     setTimeout(callback, timeoutMs)
-  }, [gamePhase])
+  }, [gamePhase]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (status !== 'success') return
+    if (blockStatus !== 'success') return
     setCurrentTrialIndex(0)
     setGamePhase('starting')
-  }, [status])
+  }, [blockStatus, blockData])
+
+  useEffect(() => {
+    if (nStatus !== 'success') return
+    setN(nData)
+    setEnableNQuery(false)
+    setGamePhase('loading')
+  }, [nStatus, nData])
 
   return (
     <CenteringContainer>
@@ -167,7 +189,7 @@ export function GamePage() {
             n,
             currentTrialIndex: String(currentTrialIndex),
             gamePhase,
-            blockLength: data?.trials.length,
+            blockLength: blockData?.trials.length,
             visionPosition: currentTrial?.vision_position,
             imageContent: (currentTrial?.vision_image ?? -100) + 1,
             shouldClickVision: currentTrial?.f_vision_correct ? (
@@ -180,11 +202,12 @@ export function GamePage() {
             ) : (
               <DevText truthy={false} />
             ),
-            queryStatus: status,
             userReaction,
             trialCorrectness: trialCorrectness.map((r) =>
               r.correct ? '✅' : '❌'
-            )
+            ),
+            blockQStatus: blockStatus,
+            nQStatus: nStatus
           }}
         />
         <div
