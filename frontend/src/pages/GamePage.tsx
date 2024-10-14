@@ -8,10 +8,13 @@ import { Matrix } from '../components/Matrix'
 import { EyeIcon, SpeakerWaveIcon } from '@heroicons/react/24/solid'
 import { Sound } from '../components/Sound'
 import { useNQuery } from '../queries/UseNQuery'
+import { Either } from '../components/Either'
+import { NChangeNotification } from '../components/NChangeNotification'
 
 // occurs in the order of the enum
 type GamePhase =
   | 'loading'
+  | 'notify_user_about_n_change'
   | 'starting'
   | 'queue'
   | 'user_can_react'
@@ -26,6 +29,7 @@ export function GamePage() {
   const [searchParams] = useSearchParams()
   const experimenteeId = searchParams.get('id')
   const [n, setN] = useState<number>(1)
+  const [oldN, setOldN] = useState<number | undefined>(undefined)
   const [userReaction, setUserReaction] = useState<ReactionType>('none')
   const {
     data: blockData,
@@ -70,6 +74,13 @@ export function GamePage() {
           blockRefetch()
         }
         break
+      case 'notify_user_about_n_change':
+        timeoutMs = 5000
+        callback = () => {
+          console.log('Gamephase: notify_user_about_n_change')
+          setGamePhase('starting')
+        }
+        break
       case 'starting':
         timeoutMs = 5000
         callback = () => {
@@ -95,7 +106,7 @@ export function GamePage() {
           // give feedback to trial if possible
           if (currentTrial !== undefined && currentTrialIndex !== undefined) {
             if (userReaction === 'vision' && currentTrial?.f_vision_correct) {
-              console.log('Correct! (vision)')
+              // Correct (vision)
               setTrialCorrectness((prevState) => [
                 ...prevState,
                 { correct: true }
@@ -104,7 +115,7 @@ export function GamePage() {
               userReaction === 'sound' &&
               currentTrial?.f_sound_correct
             ) {
-              console.log('Correct! (sound)')
+              // Correct (sound)
               setTrialCorrectness((prevState) => [
                 ...prevState,
                 { correct: true }
@@ -114,7 +125,7 @@ export function GamePage() {
               !currentTrial?.f_vision_correct &&
               !currentTrial?.f_sound_correct
             ) {
-              console.log('Correct! (none)')
+              // Correct (none)
               setTrialCorrectness((prevState) => [
                 ...prevState,
                 { correct: true }
@@ -131,6 +142,7 @@ export function GamePage() {
                 default:
                   shouldHavePressed = 'none'
               }
+              // Incorrect
               console.log('Incorrect! Should have pressed', shouldHavePressed)
               setTrialCorrectness((prevState) => [
                 ...prevState,
@@ -171,15 +183,20 @@ export function GamePage() {
   useEffect(() => {
     if (blockStatus !== 'success') return
     setCurrentTrialIndex(0)
-    setGamePhase('starting')
-  }, [blockStatus, blockData])
+    if (oldN !== n) {
+      setGamePhase('notify_user_about_n_change')
+    } else {
+      setGamePhase('starting')
+    }
+  }, [blockStatus, blockData]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (nStatus !== 'success') return
+    setOldN(n)
     setN(nData)
     setEnableNQuery(false)
     setGamePhase('loading')
-  }, [nStatus, nData])
+  }, [nStatus, nData]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <CenteringContainer>
@@ -210,16 +227,23 @@ export function GamePage() {
             nQStatus: nStatus
           }}
         />
-        <div
-          className={'flex size-full flex-col items-center justify-center py-4'}
-        >
-          <Matrix
-            activeId={
-              gamePhase === 'queue' ? currentTrial?.vision_position : undefined
+        <div className={'flex size-full flex-col items-center justify-center'}>
+          <Either
+            a={NChangeNotification({ n })}
+            b={
+              <Matrix
+                activeId={
+                  gamePhase === 'queue'
+                    ? currentTrial?.vision_position
+                    : undefined
+                }
+                imageId={
+                  gamePhase === 'queue' ? currentTrial?.vision_image : undefined
+                }
+              />
             }
-            imageId={
-              gamePhase === 'queue' ? currentTrial?.vision_image : undefined
-            }
+            showAWhen={gamePhase === 'notify_user_about_n_change'}
+            className={'flex size-full flex-col items-center justify-center'}
           />
           <Sound
             soundId={gamePhase === 'queue' ? currentTrial?.sound : undefined}
@@ -247,7 +271,10 @@ export function GamePage() {
               className={
                 'ml-16 mt-4 cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
               }
-              onClick={() => navigate('/')}
+              onClick={() => {
+                console.clear()
+                navigate('/')
+              }}
             >
               RESET
             </button>
