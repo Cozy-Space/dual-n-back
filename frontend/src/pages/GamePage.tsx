@@ -2,7 +2,7 @@ import { Dev, DevText } from 'components/Dev'
 import { useBlockQuery } from 'queries/BlockQuery'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Reaction, Trial } from 'types'
+import { Config, Reaction, Trial } from 'types'
 import { CenteringContainer } from '../components/CenteringContainer'
 import { Matrix } from '../components/Matrix'
 import { EyeIcon, SpeakerWaveIcon } from '@heroicons/react/24/solid'
@@ -10,6 +10,7 @@ import { Sound } from '../components/Sound'
 import { useNQuery } from '../queries/UseNQuery'
 import { Either } from '../components/Either'
 import { NChangeNotification } from '../components/NChangeNotification'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 
 // occurs in the order of the enum
 type GamePhase =
@@ -26,9 +27,14 @@ type ReactionType = 'none' | 'vision' | 'sound'
 
 export function GamePage() {
   const navigate = useNavigate()
+  const [redirectToStart, setRedirectToStart] = useState(false)
   const [searchParams] = useSearchParams()
   const experimenteeId = searchParams.get('id')
+  const [config] = useLocalStorage<Config>('config', () => {
+    setRedirectToStart(true)
+  })
   const [n, setN] = useState<number>(1)
+  const [currentBlockNr, setCurrentBlockNr] = useState<number>(0)
   const [oldN, setOldN] = useState<number | undefined>(undefined)
   const [userReaction, setUserReaction] = useState<ReactionType>('none')
   const {
@@ -58,9 +64,14 @@ export function GamePage() {
 
   useEffect(() => {
     if (!experimenteeId) {
-      navigate(`/`)
+      setRedirectToStart(true)
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (redirectToStart) {
+      navigate(`/`)
+    }
+  }, [redirectToStart])
 
   useEffect(() => {
     let timeoutMs: number
@@ -69,15 +80,13 @@ export function GamePage() {
       case 'loading':
         timeoutMs = 0
         callback = () => {
-          console.log('Gamephase: loading')
           setTrialCorrectness([])
-          blockRefetch()
+          void blockRefetch()
         }
         break
       case 'notify_user_about_n_change':
         timeoutMs = 5000
         callback = () => {
-          console.log('Gamephase: notify_user_about_n_change')
           setGamePhase('starting')
         }
         break
@@ -85,6 +94,7 @@ export function GamePage() {
         timeoutMs = 5000
         callback = () => {
           setCurrentTrialIndex(0)
+          setCurrentBlockNr((prevState) => prevState + 1)
           setGamePhase('queue')
         }
         break
@@ -172,8 +182,12 @@ export function GamePage() {
       case 'block_finished':
         timeoutMs = 5000
         callback = () => {
-          setEnableNQuery(true)
-          // nQuery will trigger the next block automatically
+          if (currentBlockNr === config.amount_of_blocks_to_play) {
+            console.log('Game finished!')
+          } else {
+            setEnableNQuery(true)
+            // nQuery will trigger the next block automatically
+          }
         }
         break
     }

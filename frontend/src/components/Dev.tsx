@@ -6,7 +6,7 @@ type Props = {
 
 export const Dev = ({ values }: Props) => {
   return (
-    <div className={'fixed left-0 top-0 bg-slate-900/30 text-green-800'}>
+    <div className={'fixed left-0 top-0 z-10 bg-slate-900/30 text-green-800'}>
       {Object.entries(values).map(([key, value]) => (
         <div key={key} className="p-2">
           {key}: {value}

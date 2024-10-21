@@ -10,7 +10,6 @@ export const useNQuery = (
     enabled: enabled,
     queryKey: ['user_reaction', n, JSON.stringify(reactions)],
     queryFn: async () => {
-      console.log('fetching new n')
       const response = await fetch('/api/user_reaction.post?n=' + n, {
         method: 'POST',
         headers: {

@@ -10,7 +10,7 @@ export class UserReactionService {
     let newN = usedN;
     const shouldUpgrade = this.hasConsecutiveElements(
       reactions,
-      this.configService.get('consecutive_right_hits_for_upgrade'),
+      this.configService.getGameConfig().consecutive_right_hits_for_upgrade,
       (reaction) => reaction.correct,
     );
     if (shouldUpgrade) {
@@ -18,7 +18,7 @@ export class UserReactionService {
     }
     const shouldDowngrade = this.hasConsecutiveElements(
       reactions,
-      this.configService.get('consecutive_wrong_hits_for_downgrade'),
+      this.configService.getGameConfig().consecutive_wrong_hits_for_downgrade,
       (reaction) => !reaction.correct,
     );
     if (shouldDowngrade) {

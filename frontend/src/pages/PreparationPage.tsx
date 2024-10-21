@@ -5,18 +5,25 @@ import { CenteringContainer } from '../components/CenteringContainer'
 import { SoundPlayer } from '../components/SoundPlayer'
 import BahnSound from 'assets/bahn.mp3'
 import { PencilIcon } from '@heroicons/react/20/solid'
+import { useConfigQuery } from '../queries/ConfigQuery'
 
 export function PreparationPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const experimenteeId = searchParams.get('id')
   const [playedTestAudio, setPlayedTestAudio] = useState(false)
+  const { data: configData, status: configStatus } = useConfigQuery()
 
   useEffect(() => {
     if (!experimenteeId) {
       navigate(`/`)
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (configStatus !== 'success') return
+    localStorage.setItem('config', JSON.stringify(configData))
+  }, [configStatus, configData])
 
   const changeExperimenteeId = () => {
     navigate(`/`)
@@ -25,7 +32,12 @@ export function PreparationPage() {
     setPlayedTestAudio(true)
   }
   const startGame = () => {
-    navigate(`/game?id=${experimenteeId}`)
+    if (configStatus === 'success') {
+      navigate(`/game?id=${experimenteeId}`)
+    } else {
+      alert('Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.')
+      navigate(`/?id=${experimenteeId}`)
+    }
   }
 
   return (
