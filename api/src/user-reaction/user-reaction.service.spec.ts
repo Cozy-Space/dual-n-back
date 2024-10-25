@@ -1,12 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserReactionService } from './user-reaction.service';
 import { UserReactionModule } from './user-reaction.module';
-import { ConfigService } from '../config/config.service';
 import { Reaction } from 'types/src/reaction.model';
-
-const mockConfigService = {
-  get: jest.fn(),
-};
 
 describe('UserReactionService', () => {
   let service: UserReactionService;
@@ -14,10 +9,7 @@ describe('UserReactionService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [UserReactionModule],
-    })
-      .overrideProvider(ConfigService)
-      .useValue(mockConfigService)
-      .compile();
+    }).compile();
 
     service = module.get<UserReactionService>(UserReactionService);
   });
@@ -41,14 +33,6 @@ describe('UserReactionService', () => {
   });
 
   it('should return the usedN + 1 if the amount of consecutive correct reactions is equal to the config value', () => {
-    mockConfigService.get.mockImplementation((key: string) => {
-      if (key === 'consecutive_wrong_hits_for_downgrade') {
-        return 5;
-      } else if (key === 'consecutive_right_hits_for_upgrade') {
-        return 3;
-      }
-      return 0;
-    });
     const usedN = 2;
     const reactions: Reaction[] = [
       { correct: true },
@@ -61,14 +45,6 @@ describe('UserReactionService', () => {
     expect(service.getNFromReaction(usedN, reactions)).toBe(expectedN);
   });
   it('should return the usedN + 1 if the amount of consecutive correct reactions is more then the config value', () => {
-    mockConfigService.get.mockImplementation((key: string) => {
-      if (key === 'consecutive_wrong_hits_for_downgrade') {
-        return 5;
-      } else if (key === 'consecutive_right_hits_for_upgrade') {
-        return 3;
-      }
-      return 0;
-    });
     const usedN = 2;
     const reactions: Reaction[] = [
       { correct: true },
@@ -83,14 +59,6 @@ describe('UserReactionService', () => {
     expect(service.getNFromReaction(usedN, reactions)).toBe(expectedN);
   });
   it('should return the usedN - 1 if the amount of consecutive wrong reactions is equal to the config value', () => {
-    mockConfigService.get.mockImplementation((key: string) => {
-      if (key === 'consecutive_wrong_hits_for_downgrade') {
-        return 5;
-      } else if (key === 'consecutive_right_hits_for_upgrade') {
-        return 3;
-      }
-      return 0;
-    });
     const usedN = 2;
     const reactions: Reaction[] = [
       { correct: false },
@@ -104,14 +72,6 @@ describe('UserReactionService', () => {
     expect(service.getNFromReaction(usedN, reactions)).toBe(expectedN);
   });
   it('should return the usedN - 1 if the amount of consecutive wrong reactions is more the config value', () => {
-    mockConfigService.get.mockImplementation((key: string) => {
-      if (key === 'consecutive_wrong_hits_for_downgrade') {
-        return 5;
-      } else if (key === 'consecutive_right_hits_for_upgrade') {
-        return 3;
-      }
-      return 0;
-    });
     const usedN = 2;
     const reactions: Reaction[] = [
       { correct: false },
@@ -127,14 +87,6 @@ describe('UserReactionService', () => {
     expect(service.getNFromReaction(usedN, reactions)).toBe(expectedN);
   });
   it('should return the usedN if the amount of consecutive wrong and correct reactions is less then the config value', () => {
-    mockConfigService.get.mockImplementation((key: string) => {
-      if (key === 'consecutive_wrong_hits_for_downgrade') {
-        return 5;
-      } else if (key === 'consecutive_right_hits_for_upgrade') {
-        return 3;
-      }
-      return 0;
-    });
     const usedN = 2;
     const reactions: Reaction[] = [
       { correct: false },
@@ -147,14 +99,6 @@ describe('UserReactionService', () => {
     expect(service.getNFromReaction(usedN, reactions)).toBe(expectedN);
   });
   it('should return the usedN if the amount of consecutive wrong and correct reactions is equal to the config value', () => {
-    mockConfigService.get.mockImplementation((key: string) => {
-      if (key === 'consecutive_wrong_hits_for_downgrade') {
-        return 5;
-      } else if (key === 'consecutive_right_hits_for_upgrade') {
-        return 3;
-      }
-      return 0;
-    });
     const usedN = 2;
     const reactions: Reaction[] = [
       { correct: false },
