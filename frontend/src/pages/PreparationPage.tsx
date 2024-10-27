@@ -76,6 +76,16 @@ export function PreparationPage() {
           Die Probanden-ID ist korrekt, die Laustärke ist eingestellt und ich
           bin bereit mit dem Spiel zu beginnen
         </button>
+        <button
+          className={
+            'mt-8 w-full rounded-md bg-amber-200 px-4 py-2 text-sm text-black hover:bg-amber-300'
+          }
+          onClick={() => {
+            navigate(`/result?id=${experimenteeId}`, { state: { avgN: 4 } })
+          }}
+        >
+          Game ended with avg N of 4...
+        </button>
       </Card>
     </CenteringContainer>
   )

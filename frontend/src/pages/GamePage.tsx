@@ -35,6 +35,7 @@ export function GamePage() {
   })
   const [n, setN] = useState<number>(1)
   const [currentBlockNr, setCurrentBlockNr] = useState<number>(0)
+  const [listOfN, setListOfN] = useState<number[]>([])
   const [oldN, setOldN] = useState<number | undefined>(undefined)
   const [userReaction, setUserReaction] = useState<ReactionType>('none')
   const {
@@ -81,6 +82,7 @@ export function GamePage() {
         timeoutMs = 0
         callback = () => {
           setTrialCorrectness([])
+          setListOfN((prevState) => [...prevState, n])
           void blockRefetch()
         }
         break
@@ -184,6 +186,9 @@ export function GamePage() {
         callback = () => {
           if (currentBlockNr === config.amount_of_blocks_to_play) {
             console.log('Game finished!')
+            const avgN = listOfN.reduce((a, b) => a + b) / listOfN.length
+            navigate('/result', { state: { avgN } })
+            // Todo: send data to backend && show avgN on next page
           } else {
             setEnableNQuery(true)
             // nQuery will trigger the next block automatically

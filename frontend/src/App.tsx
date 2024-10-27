@@ -5,6 +5,7 @@ import { PreparationPage } from './pages/PreparationPage'
 import { GamePage } from './pages/GamePage'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { ResultPage } from './pages/ResultPage'
 
 const queryClient = new QueryClient()
 
@@ -17,6 +18,7 @@ function App() {
             <Route path={'/'} element={<IdInputPage />} />
             <Route path={'/prepare'} element={<PreparationPage />} />
             <Route path={'/game'} element={<GamePage />} />
+            <Route path={'/result'} element={<ResultPage />} />
           </Routes>
         </BrowserRouter>
         <ReactQueryDevtools initialIsOpen={false} />
