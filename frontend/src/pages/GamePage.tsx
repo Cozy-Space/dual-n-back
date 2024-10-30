@@ -244,6 +244,7 @@ export function GamePage() {
         <DevContainer className={'fixed left-0 top-0 z-10'}>
           <Dev
             values={{
+              currentBlockNr,
               n,
               currentTrialIndex: String(currentTrialIndex),
               gamePhase,
