@@ -7,20 +7,20 @@ interface MatrixProps {
 
 export function Matrix(props: MatrixProps) {
   return (
-    <div className={'aspect-square w-full max-w-screen-md'}>
-      <div className={'grid h-full grid-cols-4 grid-rows-4 gap-4 p-4'}>
+    <div className={'flex flex-col items-center'}>
+      <div className={'grid grid-cols-4 grid-rows-4 gap-2 rounded-md'}>
         {Array.from({ length: 16 }).map((_, index) => (
           <div
             key={index}
             className={
-              'relative flex items-center justify-center rounded-md border border-gray-400 bg-white'
+              'flex aspect-square size-12 items-center justify-center rounded-md border-4 border-gray-400 bg-white sm:size-20 md:size-28 lg:size-40 xl:size-48 2xl:size-56'
             }
           >
-            {index === props.activeId && (
-              <div className={''}>
+            <div className={'size-fit flex-1'}>
+              {index === props.activeId && (
                 <QueueImage imageId={props.imageId} />
-              </div>
-            )}
+              )}
+            </div>
           </div>
         ))}
       </div>

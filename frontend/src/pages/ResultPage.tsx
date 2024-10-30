@@ -7,11 +7,11 @@ export function ResultPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const location = useLocation()
-  const avgN = location.state.avgN
+  const avgN = location.state?.avgN
   const experimenteeId = searchParams.get('id')
 
   useEffect(() => {
-    if (!experimenteeId) {
+    if (!experimenteeId || !avgN) {
       navigate(`/`)
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

@@ -32,6 +32,5 @@ COPY --from=frontend /usr/src/app/frontend/dist /usr/src/app/static
 COPY --chown=node:node package-lock.json ./
 COPY --from=api /usr/src/app/api/package.json ./
 RUN npm ci
-ENV PROD=True
 
 CMD [ "node", "main.js" ]

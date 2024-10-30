@@ -26,7 +26,6 @@ export class DualNBackService {
     );
     this.hitifyTrials(trials, hitArray, n);
 
-    this.logger.log(`shuffling vision images`);
     this.addRandomVisionImages(trials);
 
     return {

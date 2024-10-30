@@ -2,17 +2,18 @@ import { useEffect, useRef } from 'react'
 
 interface SoundProps {
   soundId: number | undefined
+  muted: boolean
 }
 
 export function Sound(props: SoundProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
-    if (audioRef.current && props.soundId !== undefined) {
+    if (audioRef.current && props.soundId !== undefined && !props.muted) {
       audioRef.current.load()
       audioRef.current.play()
     }
-  }, [props.soundId])
+  }, [props.soundId, props.muted])
 
   return (
     <audio ref={audioRef}>
