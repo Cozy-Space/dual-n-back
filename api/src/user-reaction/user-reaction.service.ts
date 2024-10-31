@@ -8,6 +8,8 @@ export class UserReactionService {
 
   public getNFromReaction(usedN: number, reactions: Reaction[]): number {
     let newN = usedN;
+    //remove first n elements of reactions
+    reactions = reactions.slice(usedN);
     const shouldUpgrade = this.hasConsecutiveElements(
       reactions,
       this.configService.getGameConfig().consecutive_right_hits_for_upgrade,

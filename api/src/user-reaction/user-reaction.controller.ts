@@ -33,7 +33,7 @@ export class UserReactionController {
       throw new BadRequestException('n and reactions are required');
     }
     this.logger.log(
-      `Creating block for n=${n} and reactions=${JSON.stringify(reactions)}`,
+      `Get new N for used-n=${n} and reactions=${JSON.stringify(reactions)}`,
     );
     return this.userReactionService.getNFromReaction(n, reactions);
   }

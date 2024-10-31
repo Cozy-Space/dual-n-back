@@ -35,6 +35,8 @@ describe('UserReactionService', () => {
   it('should return the usedN + 1 if the amount of consecutive correct reactions is equal to the config value', () => {
     const usedN = 2;
     const reactions: Reaction[] = [
+      { correct: true }, // will be deleted
+      { correct: true }, // will be deleted
       { correct: true },
       { correct: true },
       { correct: true },
@@ -47,8 +49,8 @@ describe('UserReactionService', () => {
   it('should return the usedN + 1 if the amount of consecutive correct reactions is more then the config value', () => {
     const usedN = 2;
     const reactions: Reaction[] = [
-      { correct: true },
-      { correct: true },
+      { correct: true }, // will be deleted
+      { correct: true }, // will be deleted
       { correct: true },
       { correct: true },
       { correct: true },
@@ -61,6 +63,8 @@ describe('UserReactionService', () => {
   it('should return the usedN - 1 if the amount of consecutive wrong reactions is equal to the config value', () => {
     const usedN = 2;
     const reactions: Reaction[] = [
+      { correct: false }, // will be deleted
+      { correct: false }, // will be deleted
       { correct: false },
       { correct: false },
       { correct: false },
@@ -74,8 +78,8 @@ describe('UserReactionService', () => {
   it('should return the usedN - 1 if the amount of consecutive wrong reactions is more the config value', () => {
     const usedN = 2;
     const reactions: Reaction[] = [
-      { correct: false },
-      { correct: false },
+      { correct: false }, // will be deleted
+      { correct: false }, // will be deleted
       { correct: false },
       { correct: false },
       { correct: false },
@@ -89,8 +93,8 @@ describe('UserReactionService', () => {
   it('should return the usedN if the amount of consecutive wrong and correct reactions is less then the config value', () => {
     const usedN = 2;
     const reactions: Reaction[] = [
-      { correct: false },
-      { correct: false },
+      { correct: false }, // will be deleted
+      { correct: false }, // will be deleted
       { correct: true },
       { correct: true },
       { correct: false },
@@ -101,6 +105,8 @@ describe('UserReactionService', () => {
   it('should return the usedN if the amount of consecutive wrong and correct reactions is equal to the config value', () => {
     const usedN = 2;
     const reactions: Reaction[] = [
+      { correct: false }, // will be deleted
+      { correct: false }, // will be deleted
       { correct: false },
       { correct: false },
       { correct: false },
