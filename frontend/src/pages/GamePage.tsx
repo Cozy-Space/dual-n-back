@@ -114,7 +114,7 @@ export function GamePage() {
         }
         break
       case 'user_can_react':
-        timeoutMs = currentTrial?.ms_fixation_time || 0
+        timeoutMs = currentTrial?.ms_reaction_time || 0
         callback = () => {
           setGamePhase('feedback')
         }
@@ -208,8 +208,7 @@ export function GamePage() {
 
   useEffect(() => {
     if (blockStatus === 'error') {
-      // Todo: handle error
-      // navigate(/error, code: $65423)
+      navigate(`/error`, { state: { errorCode: 1804 } })
       return
     }
     if (blockStatus !== 'success') return
@@ -223,8 +222,7 @@ export function GamePage() {
 
   useEffect(() => {
     if (nStatus === 'error') {
-      // Todo: handle error
-      // navigate(/error, code: $1234)
+      navigate(`/error`, { state: { errorCode: 1306 } })
       return
     }
     if (nStatus !== 'success') return

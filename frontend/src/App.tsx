@@ -6,6 +6,7 @@ import { GamePage } from './pages/GamePage'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ResultPage } from './pages/ResultPage'
+import { ErrorPage } from './pages/ErrorPage'
 
 const queryClient = new QueryClient()
 
@@ -19,6 +20,7 @@ function App() {
             <Route path={'/prepare'} element={<PreparationPage />} />
             <Route path={'/game'} element={<GamePage />} />
             <Route path={'/result'} element={<ResultPage />} />
+            <Route path={'/error'} element={<ErrorPage />} />
           </Routes>
         </BrowserRouter>
         <ReactQueryDevtools initialIsOpen={false} />

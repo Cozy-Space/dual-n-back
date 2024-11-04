@@ -7,5 +7,5 @@ export type Trial = {
   vision_image: number;
 
   ms_vision_time: number;
-  ms_fixation_time: number;
+  ms_reaction_time: number;
 };

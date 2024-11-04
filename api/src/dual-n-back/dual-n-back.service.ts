@@ -103,7 +103,7 @@ export class DualNBackService {
       vision_image: 0,
       f_vision_correct: false,
       ms_vision_time: this.configService.get('ms_vision_time'),
-      ms_fixation_time: this.configService.get('ms_fixation_time'),
+      ms_reaction_time: this.configService.get('ms_reaction_time'),
     };
   }
 

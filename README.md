@@ -1,5 +1,12 @@
 Todo:
 - Feedback
-✅ Bei der Berechnung des neuen ns die ersten alt-n Stellen nicht berücksichtigen
-- Handle Error in GamePage
+- ✅ Bei der Berechnung des neuen ns die ersten alt-n Stellen nicht berücksichtigen
+- ✅ Handle Error in GamePage
 - Füge Lizenzhinweise hinzu
+- Die Töne variieren je nachdem wie gut jemand spielt
+- config zu type umwandeln
+- prozente der targets zu ganzzahlen machen
+- Targettrials können sowohl auditiv ALS AUCH visuell sein
+- dritten reaktionsknopf einbauen, der BEIDES abdeckt
+  - wenn mehrere Knöpfe gedrückt werden, wird der letzte Knopf gewertet, um korrekturen zu erlauben
+- 
