@@ -8,10 +8,8 @@ export class UserReactionService {
 
   public getNFromReaction(usedN: number, reactions: Reaction[]): number {
     let newN = usedN;
-    //remove first n elements of reactions
-    reactions = reactions.slice(usedN);
     const shouldUpgrade = this.hasConsecutiveElements(
-      reactions,
+      reactions.slice(usedN), // don't use the first n reactions for upgrading
       this.configService.getGameConfig().consecutive_right_hits_for_upgrade,
       (reaction) => reaction.correct,
     );
@@ -19,7 +17,7 @@ export class UserReactionService {
       newN++;
     }
     const shouldDowngrade = this.hasConsecutiveElements(
-      reactions,
+      reactions, // use the first n reactions for downgrading
       this.configService.getGameConfig().consecutive_wrong_hits_for_downgrade,
       (reaction) => !reaction.correct,
     );
