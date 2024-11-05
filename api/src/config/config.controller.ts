@@ -8,6 +8,6 @@ export class ConfigController {
 
   @Get('get') getGameConfig() {
     this.logger.log(`Getting config`);
-    return this.configService.getGameConfig();
+    return this.configService.getDayConfig();
   }
 }

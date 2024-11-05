@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '../config/config.service';
 import { Block, Trial } from 'types';
 
-type HitType = 'sound' | 'vision_position' | 'none';
+type HitType = 'auditory' | 'visual' | 'auditory_visual' /* = both */ | 'none';
 
 @Injectable()
 export class DualNBackService {
@@ -10,19 +10,16 @@ export class DualNBackService {
   @Inject() configService: ConfigService;
 
   public createBlock(n: number): Block {
-    this.logger.log(`Using config: ${JSON.stringify(this.configService)}`);
+    const config = this.configService.getGameConfig();
+    this.logger.log(`Using config: ${config}`);
 
-    const hits = Math.floor(
-      this.configService.get('base_amount_of_trials') *
-        this.configService.get('hit_percentage'),
-    );
-
-    this.logger.log(`Creating block with ${hits} hits`);
     const trials: Trial[] = this.createTrials(n);
     const hitArray: HitType[] = this.createHitArray(
-      this.configService.get('base_amount_of_trials'),
+      config.base_amount_of_trials,
       n,
-      hits,
+      config.amount_of_auditory_targets,
+      config.amount_of_visual_targets,
+      config.amount_of_auditory_visual_targets,
     );
     this.hitifyTrials(trials, hitArray, n);
 
@@ -44,40 +41,45 @@ export class DualNBackService {
       if (i < n) {
         trials[i].vision_position = this.getExcludedRandomNumber(
           undefined,
-          this.configService.get('vision_position_count'),
+          this.configService.getGameConfig().amount_of_positions,
         );
-        trials[i].sound = this.getExcludedRandomNumber(
+        trials[i].sound_file = this.getExcludedRandomNumber(
           undefined,
-          this.configService.get('sound_count'),
+          this.configService.getGameConfig().amount_of_sounds,
         );
 
         continue;
       }
       const hitType = hitArray[i];
-      if (hitType === 'vision_position') {
+      if (hitType === 'visual') {
         trials[i].vision_position = trials[i - n].vision_position;
-        trials[i].sound = this.getExcludedRandomNumber(
-          trials[i - n].sound,
-          this.configService.get('sound_count'),
+        trials[i].sound_file = this.getExcludedRandomNumber(
+          trials[i - n].sound_file,
+          this.configService.getGameConfig().amount_of_sounds,
         );
-      } else if (hitType === 'sound') {
+      } else if (hitType === 'auditory') {
         trials[i].vision_position = this.getExcludedRandomNumber(
           trials[i - n].vision_position,
-          this.configService.get('vision_position_count'),
+          this.configService.getGameConfig().amount_of_positions,
         );
-        trials[i].sound = trials[i - n].sound;
+        trials[i].sound_file = trials[i - n].sound_file;
+      } else if (hitType === 'auditory_visual') {
+        trials[i].vision_position = trials[i - n].vision_position;
+        trials[i].sound_file = trials[i - n].sound_file;
       } else {
         trials[i].vision_position = this.getExcludedRandomNumber(
           trials[i - n].vision_position,
-          this.configService.get('vision_position_count'),
+          this.configService.getGameConfig().amount_of_positions,
         );
-        trials[i].sound = this.getExcludedRandomNumber(
-          trials[i - n].sound,
-          this.configService.get('sound_count'),
+        trials[i].sound_file = this.getExcludedRandomNumber(
+          trials[i - n].sound_file,
+          this.configService.getGameConfig().amount_of_sounds,
         );
       }
-      trials[i].f_vision_correct = hitType === 'vision_position';
-      trials[i].f_sound_correct = hitType === 'sound';
+      trials[i].is_visual_target =
+        hitType === 'visual' || hitType === 'auditory_visual';
+      trials[i].is_auditory_target =
+        hitType === 'auditory' || hitType === 'auditory_visual';
     }
   }
 
@@ -86,7 +88,7 @@ export class DualNBackService {
 
     for (
       let i = 0;
-      i < this.configService.get('base_amount_of_trials') + n;
+      i < this.configService.getGameConfig().base_amount_of_trials + n;
       i++
     ) {
       trials.push(this.createBaseTrial());
@@ -97,26 +99,26 @@ export class DualNBackService {
 
   private createBaseTrial(): Trial {
     return {
-      sound: 0,
-      f_sound_correct: false,
+      sound_file: 0,
+      is_auditory_target: false,
       vision_position: -1,
-      vision_image: 0,
-      f_vision_correct: false,
-      ms_vision_time: this.configService.get('ms_vision_time'),
-      ms_reaction_time: this.configService.get('ms_reaction_time'),
+      image_file: 0,
+      is_visual_target: false,
+      ms_vision_time: this.configService.getGameConfig().ms_vision_time,
+      ms_reaction_time: this.configService.getGameConfig().ms_reaction_time,
     };
   }
 
   private addRandomVisionImages(trials: Trial[]): void {
-    const visionImages = Array.from(
-      { length: this.configService.get('vision_image_count') },
+    const images = Array.from(
+      { length: this.configService.getGameConfig().amount_of_images },
       (_, i) => i,
     );
-    visionImages.sort(() => Math.random() - 0.5);
+    images.sort(() => Math.random() - 0.5);
 
     for (let i = 0; i < trials.length; i++) {
-      trials[i].vision_image =
-        visionImages[i % this.configService.get('vision_image_count')];
+      trials[i].image_file =
+        images[i % this.configService.getGameConfig().amount_of_images];
     }
   }
 
@@ -129,23 +131,25 @@ export class DualNBackService {
   }
 
   createHitArray(
-    baseAmountOfTrials: number = this.configService.get(
-      'base_amount_of_trials',
-    ),
+    baseAmountOfTrials: number,
     n: number,
-    hits: number,
+    auditoryHits: number,
+    visualHits: number,
+    auditoryVisualHits: number,
   ): HitType[] {
     const hitArray: HitType[] = Array.from(
       { length: baseAmountOfTrials },
       () => 'none',
     ); // none of the trials are hits
     // set given amount of hits
-    for (let i = 0; i < hits * 2; i++) {
-      if (i < hits) {
-        hitArray[i] = 'vision_position';
-      } else {
-        hitArray[i] = 'sound';
-      }
+    for (let i = 0; i < auditoryVisualHits; i++) {
+      hitArray[i] = 'auditory_visual';
+    }
+    for (let i = 0; i < visualHits; i++) {
+      hitArray[auditoryVisualHits + i] = 'visual';
+    }
+    for (let i = 0; i < auditoryHits; i++) {
+      hitArray[auditoryVisualHits + visualHits + i] = 'auditory';
     }
     hitArray.sort(() => Math.random() - 0.5); // shuffle the hits
     // add n non-hits to the beginning of the array to match the array length

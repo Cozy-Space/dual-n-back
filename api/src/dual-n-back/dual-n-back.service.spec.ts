@@ -2,55 +2,28 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DualNBackService } from './dual-n-back.service';
 import { DualNBackModule } from './dual-n-back.module';
 import { ConfigService } from '../config/config.service';
+import { GameConfig } from 'types';
 
 const mockConfigService = {
-  get: jest.fn(),
+  getGameConfig: jest.fn(),
 };
 
-const testCases = [
+const testCases: [{ config: GameConfig; n: number }] = [
   {
     config: {
       base_amount_of_trials: 20,
-      hit_percentage: 0.3,
-      vision_position_count: 16,
-      sound_count: 16,
-      vision_image_count: 20,
+      amount_of_auditory_targets: 4,
+      amount_of_visual_targets: 4,
+      amount_of_auditory_visual_targets: 2,
+      amount_of_images: 20,
+      amount_of_positions: 16,
+      amount_of_sounds: 16,
+      ms_vision_time: 500,
+      ms_reaction_time: 2500,
+      consecutive_right_hits_for_upgrade: 3,
+      consecutive_wrong_hits_for_downgrade: 5,
     },
     n: 1,
-    type: 'vision_position',
-  },
-  {
-    config: {
-      base_amount_of_trials: 20,
-      hit_percentage: 0.3,
-      vision_position_count: 16,
-      sound_count: 16,
-      vision_image_count: 40,
-    },
-    n: 2,
-    type: 'sound',
-  },
-  {
-    config: {
-      base_amount_of_trials: 30,
-      hit_percentage: 0.5,
-      vision_position_count: 200,
-      sound_count: 16,
-      vision_image_count: 2,
-    },
-    n: 5,
-    type: 'vision_position',
-  },
-  {
-    config: {
-      base_amount_of_trials: 20,
-      hit_percentage: 0.3,
-      vision_position_count: 16,
-      sound_count: 16,
-      vision_image_count: 21,
-    },
-    n: 1,
-    type: 'sound',
   },
 ];
 
@@ -68,77 +41,74 @@ describe('DualNBackService', () => {
     service = module.get<DualNBackService>(DualNBackService);
   });
 
-  describe.each(testCases)('createBlock', ({ config, n, type }) => {
+  describe.each(testCases)('createBlock', ({ config, n }) => {
     beforeAll(() => {
-      mockConfigService.get.mockImplementation((key: string) => {
-        return config[key];
-      });
+      mockConfigService.getGameConfig.mockReturnValue(config);
     });
 
     it(`should return a block with base_amount_of_trials(${config.base_amount_of_trials}) + n(${n}) trials`, () => {
       const block = service.createBlock(n);
 
-      expect(block.trials.length).toBe(
-        mockConfigService.get('base_amount_of_trials') + n,
-      );
+      expect(block.trials.length).toBe(config.base_amount_of_trials + n);
       expect(block.n).toBe(n);
     });
 
-    it(`every trial should have a ${type}`, () => {
+    it(`should return trials, where ${config.amount_of_visual_targets + config.amount_of_auditory_targets + config.amount_of_auditory_visual_targets} trials are targeted correctly`, () => {
       const block = service.createBlock(n);
 
-      block.trials.forEach((trial) => {
-        expect(trial[type]).toBeDefined();
-      });
-    });
-
-    it(`should return trials, where ${config.hit_percentage * 100} % of ${type} are correct`, () => {
-      const block = service.createBlock(n);
-
-      const correctField =
-        type === 'vision_position' ? 'f_vision_correct' : 'f_sound_correct';
-      const correctTrials = block.trials.filter((trial) => trial[correctField]);
-      const incorrectTrials = block.trials.filter(
-        (trial) => !trial[correctField],
+      const auditoryTargets = block.trials.filter(
+        (trial) => !trial.is_visual_target && trial.is_auditory_target,
+      );
+      const visualTargets = block.trials.filter(
+        (trial) => trial.is_visual_target && !trial.is_auditory_target,
+      );
+      const auditoryVisualTargets = block.trials.filter(
+        (trial) => trial.is_visual_target && trial.is_auditory_target,
+      );
+      const nonTargets = block.trials.filter(
+        (trial) => !trial.is_visual_target && !trial.is_auditory_target,
       );
 
-      expect(correctTrials.length).toBe(
-        mockConfigService.get('base_amount_of_trials') *
-          mockConfigService.get('hit_percentage'),
+      expect(auditoryTargets.length).toBe(config.amount_of_auditory_targets);
+      expect(visualTargets.length).toBe(config.amount_of_visual_targets);
+      expect(auditoryVisualTargets.length).toBe(
+        config.amount_of_auditory_visual_targets,
       );
-      expect(incorrectTrials.length).toBe(
-        mockConfigService.get('base_amount_of_trials') +
+      expect(nonTargets.length).toBe(
+        config.base_amount_of_trials +
           n -
-          correctTrials.length,
+          config.amount_of_auditory_targets -
+          config.amount_of_visual_targets -
+          config.amount_of_auditory_visual_targets,
       );
     });
 
-    it(`should return trials, where the first correct ${type} ones index is at least n (${n})`, () => {
+    it(`should return trials, where the first target trials index is at least n (${n})`, () => {
       const block = service.createBlock(n);
 
-      const correctField =
-        type === 'vision_position' ? 'f_vision_correct' : 'f_sound_correct';
       const firstVisualCorrectTrialIndex = block.trials.findIndex(
-        (trial) => trial[correctField],
+        (trial) => trial.is_visual_target || trial.is_auditory_target,
       );
 
       expect(firstVisualCorrectTrialIndex).toBeGreaterThanOrEqual(n);
     });
 
-    it(`should return trials, where a correct ${type} ones ${type} is the as the one n steps back`, () => {
+    it(`should return trials, where a target queue is the same as the one n steps back`, () => {
       const block = service.createBlock(n);
-      const correctField =
-        type === 'vision_position' ? 'f_vision_correct' : 'f_sound_correct';
-      for (const trials of block.trials) {
-        if (trials[correctField]) {
-          expect(trials[type]).toBe(
-            block.trials[block.trials.indexOf(trials) - n][type],
+
+      for (const [i, trial] of block.trials.entries()) {
+        if (trial.is_visual_target) {
+          expect(trial.vision_position).toBe(
+            block.trials[i - n].vision_position,
           );
+        }
+        if (trial.is_auditory_target) {
+          expect(trial.sound_file).toBe(block.trials[i - n].sound_file);
         }
       }
     });
 
-    it(`should return trial, where an incorrect ${type} is not the same as the one n (${n}) steps back`, () => {
+    it(`should return trial, where an nontarget queue is not the same as the one n (${n}) steps back`, () => {
       const block = service.createBlock(n);
 
       for (const [i, trial] of block.trials.entries()) {
@@ -146,66 +116,87 @@ describe('DualNBackService', () => {
           continue;
         }
 
-        const correctField =
-          type === 'vision_position' ? 'f_vision_correct' : 'f_sound_correct';
-        if (!trial[correctField]) {
-          expect(trial[type]).not.toBe(block.trials[i - n][type]);
+        if (!trial.is_visual_target) {
+          expect(trial.vision_position).not.toBe(
+            block.trials[i - n].vision_position,
+          );
+        }
+        if (!trial.is_auditory_target) {
+          expect(trial.sound_file).not.toBe(block.trials[i - n].sound_file);
         }
       }
     });
 
-    it('should return a block, where every visual image is not repeating itself', () => {
+    it('should return a block, where every visual image is not repeating itself => images are shuffled', () => {
       const block = service.createBlock(n);
 
-      const visualImages = block.trials.map((trial) => trial.vision_image);
+      const visualImages = block.trials.map((trial) => trial.image_file);
 
-      for (let i = 0; i < visualImages.length - 1; i++) {
+      for (let i = 0; i < visualImages.length; i++) {
         expect(visualImages[i]).not.toBe(visualImages[i + 1]);
       }
     });
   });
 
-  describe.each(testCases)('utils', ({ config, n, type }) => {
+  describe.each(testCases)('utils', ({ config, n }) => {
     it(`should create an hitArray with ${config.base_amount_of_trials} + ${n} elements`, () => {
       const hitArray = service.createHitArray(
         config.base_amount_of_trials,
         n,
         0,
+        0,
+        0,
       );
 
       expect(hitArray.length).toBe(config.base_amount_of_trials + n);
     });
-    it(`should create an hitArray with exactly ${config.hit_percentage} hits`, () => {
-      const hits = Math.floor(
-        config.base_amount_of_trials * config.hit_percentage,
-      );
+    it(`should create an hitArray with exactly ${config.amount_of_visual_targets + config.amount_of_auditory_targets + config.amount_of_auditory_visual_targets} hits`, () => {
       const hitArray = service.createHitArray(
         config.base_amount_of_trials,
         n,
-        hits,
+        config.amount_of_auditory_targets,
+        config.amount_of_visual_targets,
+        config.amount_of_auditory_visual_targets,
       );
-      expect(hitArray.filter((hit) => hit === type).length).toBe(hits);
+      const actualHits = hitArray.filter((hit) => hit !== 'none');
+      expect(actualHits.length).toBe(
+        config.amount_of_visual_targets +
+          config.amount_of_auditory_targets +
+          config.amount_of_auditory_visual_targets,
+      );
     });
-    it(`should return an array where each element is either 'sound', 'vision_position' or 'none'`, () => {
-      const hits = Math.floor(
-        config.base_amount_of_trials * config.hit_percentage,
-      );
+    it(`should return an array where each element is either 'auditory', 'visual', 'auditory_visual' or 'none'`, () => {
       const hitArray = service.createHitArray(
         config.base_amount_of_trials,
         n,
-        hits,
+        config.amount_of_auditory_targets,
+        config.amount_of_visual_targets,
+        config.amount_of_auditory_visual_targets,
       );
 
       hitArray.forEach((hit) => {
-        expect(['sound', 'vision_position', 'none']).toContain(hit);
+        expect(['auditory', 'visual', 'auditory_visual', 'none']).toContain(
+          hit,
+        );
       });
     });
     it(`should return a random number, that is not the same as the excluded one`, () => {
       const excluded = 5;
       const max = 10;
 
-      const random = service.getExcludedRandomNumber(excluded, max);
-      expect(random).not.toBe(excluded);
+      expect([
+        service.getExcludedRandomNumber(excluded, max),
+        service.getExcludedRandomNumber(excluded, max),
+        service.getExcludedRandomNumber(excluded, max),
+        service.getExcludedRandomNumber(excluded, max),
+        service.getExcludedRandomNumber(excluded, max),
+        service.getExcludedRandomNumber(excluded, max),
+        service.getExcludedRandomNumber(excluded, max),
+        service.getExcludedRandomNumber(excluded, max),
+        service.getExcludedRandomNumber(excluded, max),
+        service.getExcludedRandomNumber(excluded, max),
+        service.getExcludedRandomNumber(excluded, max),
+      ]).not.toContain(excluded);
     });
   });
 });

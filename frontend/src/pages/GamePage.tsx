@@ -2,11 +2,13 @@ import { Dev, DevText } from 'components/Dev'
 import { useBlockQuery } from 'queries/BlockQuery'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Config, Reaction, Trial } from 'types'
+import { DayConfig, Reaction, Trial } from 'types'
 import { CenteringContainer } from '../components/CenteringContainer'
 import { Matrix } from '../components/Matrix'
 import {
+  ArrowPathIcon,
   EyeIcon,
+  PlusCircleIcon,
   SpeakerWaveIcon,
   SpeakerXMarkIcon
 } from '@heroicons/react/24/solid'
@@ -16,7 +18,6 @@ import { Either } from '../components/Either'
 import { NChangeNotification } from '../components/NChangeNotification'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { DevContainer } from '../components/DevContainer'
-import { ArrowPathIcon } from '@heroicons/react/24/solid'
 
 // occurs in the order of the enum
 type GamePhase =
@@ -29,7 +30,7 @@ type GamePhase =
   | 'wait_for_feedback_is_done'
   | 'block_finished'
 
-type ReactionType = 'none' | 'vision' | 'sound'
+type ReactionType = 'none' | 'auditory' | 'visual' | 'auditory_visual'
 
 export function GamePage() {
   const navigate = useNavigate()
@@ -37,7 +38,7 @@ export function GamePage() {
   const [redirectToStart, setRedirectToStart] = useState(false)
   const [searchParams] = useSearchParams()
   const experimenteeId = searchParams.get('id')
-  const [config] = useLocalStorage<Config>('config', () => {
+  const [config] = useLocalStorage<DayConfig>('config', () => {
     setRedirectToStart(true)
   })
   const [n, setN] = useState<number>(1)
@@ -94,7 +95,7 @@ export function GamePage() {
         }
         break
       case 'notify_user_about_n_change':
-        timeoutMs = 5000
+        timeoutMs = 10000
         callback = () => {
           setGamePhase('starting')
         }
@@ -124,15 +125,28 @@ export function GamePage() {
         callback = () => {
           // give feedback to trial if possible
           if (currentTrial !== undefined && currentTrialIndex !== undefined) {
-            if (userReaction === 'vision' && currentTrial?.f_vision_correct) {
+            if (
+              userReaction === 'auditory_visual' &&
+              currentTrial.is_auditory_target &&
+              currentTrial.is_visual_target
+            ) {
+              // Correct (auditory and visual)
+              setTrialCorrectness((prevState) => [
+                ...prevState,
+                { correct: true }
+              ])
+            } else if (
+              userReaction === 'visual' &&
+              currentTrial.is_visual_target
+            ) {
               // Correct (vision)
               setTrialCorrectness((prevState) => [
                 ...prevState,
                 { correct: true }
               ])
             } else if (
-              userReaction === 'sound' &&
-              currentTrial?.f_sound_correct
+              userReaction === 'auditory' &&
+              currentTrial.is_auditory_target
             ) {
               // Correct (sound)
               setTrialCorrectness((prevState) => [
@@ -141,8 +155,8 @@ export function GamePage() {
               ])
             } else if (
               userReaction === 'none' &&
-              !currentTrial?.f_vision_correct &&
-              !currentTrial?.f_sound_correct
+              !currentTrial.is_visual_target &&
+              !currentTrial.is_auditory_target
             ) {
               // Correct (none)
               setTrialCorrectness((prevState) => [
@@ -151,15 +165,17 @@ export function GamePage() {
               ])
             } else {
               let shouldHavePressed: string
-              switch (true) {
-                case currentTrial?.f_vision_correct:
-                  shouldHavePressed = 'vision'
-                  break
-                case currentTrial?.f_sound_correct:
-                  shouldHavePressed = 'sound'
-                  break
-                default:
-                  shouldHavePressed = 'none'
+              if (
+                currentTrial.is_auditory_target &&
+                currentTrial.is_visual_target
+              ) {
+                shouldHavePressed = 'both'
+              } else if (currentTrial.is_auditory_target) {
+                shouldHavePressed = 'sound'
+              } else if (currentTrial.is_visual_target) {
+                shouldHavePressed = 'vision'
+              } else {
+                shouldHavePressed = 'none'
               }
               // Incorrect
               console.log('Incorrect! Should have pressed', shouldHavePressed)
@@ -248,13 +264,13 @@ export function GamePage() {
               gamePhase,
               blockLength: blockData?.trials.length,
               visionPosition: currentTrial?.vision_position,
-              imageContent: (currentTrial?.vision_image ?? -100) + 1,
-              shouldClickVision: currentTrial?.f_vision_correct ? (
+              imageContent: (currentTrial?.image_file ?? -100) + 1,
+              shouldClickVision: currentTrial?.is_visual_target ? (
                 <DevText truthy={true} />
               ) : (
                 <DevText truthy={false} />
               ),
-              shouldClickSound: currentTrial?.f_sound_correct ? (
+              shouldClickSound: currentTrial?.is_auditory_target ? (
                 <DevText truthy={true} />
               ) : (
                 <DevText truthy={false} />
@@ -279,14 +295,14 @@ export function GamePage() {
                   : undefined
               }
               imageId={
-                gamePhase === 'queue' ? currentTrial?.vision_image : undefined
+                gamePhase === 'queue' ? currentTrial?.image_file : undefined
               }
             />
           }
           showAWhen={gamePhase === 'notify_user_about_n_change'}
         />
         <Sound
-          soundId={gamePhase === 'queue' ? currentTrial?.sound : undefined}
+          soundId={gamePhase === 'queue' ? currentTrial?.sound_file : undefined}
           muted={muted}
         />
         <div className={'mt-4 flex gap-8'}>
@@ -294,7 +310,7 @@ export function GamePage() {
             className={
               'cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
             }
-            onClick={() => setUserReaction('vision')}
+            onClick={() => setUserReaction('visual')}
           >
             <EyeIcon className={'size-10 cursor-pointer text-white'} />
           </button>
@@ -302,9 +318,17 @@ export function GamePage() {
             className={
               'cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
             }
-            onClick={() => setUserReaction('sound')}
+            onClick={() => setUserReaction('auditory')}
           >
             <SpeakerWaveIcon className={'size-10 text-white'} />
+          </button>
+          <button
+            className={
+              'cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
+            }
+            onClick={() => setUserReaction('auditory_visual')}
+          >
+            <PlusCircleIcon className={'size-10 text-white'} />
           </button>
         </div>
       </div>

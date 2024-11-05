@@ -1,10 +1,10 @@
 export type Trial = {
-  sound: number;
-  f_sound_correct: boolean;
+  sound_file: number;
+  is_auditory_target: boolean;
 
   vision_position: number;
-  f_vision_correct: boolean;
-  vision_image: number;
+  is_visual_target: boolean;
+  image_file: number;
 
   ms_vision_time: number;
   ms_reaction_time: number;
