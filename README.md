@@ -25,6 +25,6 @@ Todo:
   - gedanken: Wir speichern einfach alles. Pro Trial welche Position, welches Bild, welcher Sound, wie reagiert wurde, wie reagiert hätte müssen. Und auch die Prozente von oben.
     - Pro User pro Tag gibts dann einfach ein file, und da steht dann alles drin.
 - Timer zu N-Change hinzufügen
-- N-Change bei jedem neuen Block anzeigen
+- ✅ N-Change bei jedem neuen Block anzeigen
 - Füge Lizenzhinweise hinzu
 

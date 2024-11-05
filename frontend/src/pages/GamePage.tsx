@@ -44,7 +44,6 @@ export function GamePage() {
   const [n, setN] = useState<number>(1)
   const [currentBlockNr, setCurrentBlockNr] = useState<number>(0)
   const [listOfN, setListOfN] = useState<number[]>([])
-  const [oldN, setOldN] = useState<number | undefined>(undefined)
   const [userReaction, setUserReaction] = useState<ReactionType>('none')
   const {
     data: blockData,
@@ -229,11 +228,7 @@ export function GamePage() {
     }
     if (blockStatus !== 'success') return
     setCurrentTrialIndex(0)
-    if (oldN !== n) {
-      setGamePhase('notify_user_about_n_change')
-    } else {
-      setGamePhase('starting')
-    }
+    setGamePhase('notify_user_about_n_change')
   }, [blockStatus, blockData]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -242,7 +237,6 @@ export function GamePage() {
       return
     }
     if (nStatus !== 'success') return
-    setOldN(n)
     setN(nData)
     setEnableNQuery(false)
     setGamePhase('loading')
