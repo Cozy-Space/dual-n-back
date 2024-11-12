@@ -48,7 +48,15 @@ export function IdInputPage() {
             Weiter
           </button>
         </form>
-        <DevContainer className={'mt-4'}>
+        <DevContainer className={'mt-4 flex flex-col gap-2'}>
+          <button
+            className={
+              'w-full rounded-md bg-blue-500 py-2 text-white hover:bg-blue-600'
+            }
+            onClick={() => navigate('/prepare?id=test_test_test')}
+          >
+            Weiter, aber mit ID
+          </button>
           <button
             className={
               'w-full rounded-md bg-blue-500 py-2 text-white hover:bg-blue-600'

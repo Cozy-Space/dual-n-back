@@ -31,6 +31,8 @@ type GamePhase =
   | 'wait_for_feedback_is_done'
   | 'block_finished'
 
+const notify_user_about_n_change_timeout = 10000
+
 type ReactionType = 'none' | 'auditory' | 'visual' | 'auditory_visual'
 
 export function GamePage() {
@@ -96,7 +98,7 @@ export function GamePage() {
         }
         break
       case 'notify_user_about_n_change':
-        timeoutMs = 10000
+        timeoutMs = notify_user_about_n_change_timeout
         callback = () => {
           setGamePhase('starting')
         }
@@ -213,7 +215,7 @@ export function GamePage() {
           if (currentBlockNr === config.amount_of_blocks_to_play) {
             console.log('Game finished!')
             const avgN = listOfN.reduce((a, b) => a + b) / listOfN.length
-            // Todo: send avgN, day and experimenteeId to backend
+            // Todo: send statistics to backend
             navigate(`/result?id=${experimenteeId}`, { state: { avgN } })
           } else {
             setEnableNQuery(true)
@@ -285,7 +287,12 @@ export function GamePage() {
           </DevContainer>
           <Either
             className={'flex size-5/6 flex-col items-center justify-center'}
-            a={NChangeNotification({ n })}
+            a={
+              <NChangeNotification
+                n={n}
+                timeout={notify_user_about_n_change_timeout}
+              />
+            }
             b={
               <Matrix
                 activeId={

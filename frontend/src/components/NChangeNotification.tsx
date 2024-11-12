@@ -1,8 +1,10 @@
 import { classNames } from '../utils/classnames'
 import React from 'react'
+import { TimedProgressBar } from './TimedProgressBar'
 
 interface NChangeNotificationProps {
   n: number
+  timeout: number
   className?: string | undefined
 }
 
@@ -10,7 +12,7 @@ export function NChangeNotification(props: NChangeNotificationProps) {
   return (
     <div
       className={classNames(
-        'aspect-square w-full max-w-screen-md flex items-center justify-center',
+        'aspect-square w-full max-w-screen-md flex items-center justify-center flex-col',
         props.className
       )}
     >
@@ -19,6 +21,7 @@ export function NChangeNotification(props: NChangeNotificationProps) {
         wenn der Stimulus identisch ist, wie der Stimulus{' '}
         <strong>{mapNToDurchgang(props.n)}</strong> zuvor.
       </span>
+      <TimedProgressBar durationMs={props.timeout} className={'mt-14'} />
     </div>
   )
 }
