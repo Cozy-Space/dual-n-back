@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ResultPage } from './pages/ResultPage'
 import { ErrorPage } from './pages/ErrorPage'
+import { PlaygroundPage } from './pages/PlaygroundPage'
 
 const queryClient = new QueryClient()
 
@@ -16,6 +17,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <Routes>
+            <Route path={'/playground'} element={<PlaygroundPage />} />
             <Route path={'/'} element={<IdInputPage />} />
             <Route path={'/prepare'} element={<PreparationPage />} />
             <Route path={'/game'} element={<GamePage />} />

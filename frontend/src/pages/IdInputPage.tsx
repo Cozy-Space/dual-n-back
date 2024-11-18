@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Card } from '../components/Card'
 import { CenteringContainer } from '../components/CenteringContainer'
+import { DevContainer } from '../components/DevContainer'
 
 export function IdInputPage() {
   const navigate = useNavigate()
@@ -40,11 +41,23 @@ export function IdInputPage() {
           />
           <button
             type="submit"
-            className="w-full rounded-md bg-blue-500 py-2 text-white transition duration-200 hover:bg-blue-600"
+            className={
+              'w-full rounded-md bg-blue-500 py-2 text-white transition duration-200 hover:bg-blue-600'
+            }
           >
             Weiter
           </button>
         </form>
+        <DevContainer className={'mt-4'}>
+          <button
+            className={
+              'w-full rounded-md bg-blue-500 py-2 text-white hover:bg-blue-600'
+            }
+            onClick={() => navigate('/playground')}
+          >
+            To playground
+          </button>
+        </DevContainer>
       </Card>
     </CenteringContainer>
   )

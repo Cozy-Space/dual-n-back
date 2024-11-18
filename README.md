@@ -5,17 +5,17 @@ Todo:
 - ✅ Targettrials können sowohl auditiv ALS AUCH visuell sein
 - ✅ dritten reaktionsknopf einbauen, der "beides" abdeckt
   - ✅ wenn mehrere Knöpfe gedrückt werden, wird der letzte Knopf gewertet, um korrekturen zu erlauben
-  - wenn ich "beides" hätte drücken müssen, aber nur "sound" drücke, welches feedback bekomme ich und ist die reaktion "richtig" oder "falsch" oder was neues?
-    - wenn ich "beides" hätte drücken müssen, aber nur "sound" drücke, bekomme ich das feedback "falsch" für BEIDES und die reaktion wird als "falsch" gewertet
+  - ✅ wenn ich "beides" hätte drücken müssen, aber nur "sound" drücke, welches feedback bekomme ich und ist die reaktion "richtig" oder "falsch" oder was neues?
+    - ✅ wenn ich "beides" hätte drücken müssen, aber nur "sound" drücke, bekomme ich das feedback "falsch" für BEIDES und die reaktion wird als "falsch" gewertet
 - ✅ prozente der targets zu ganzzahlen machen
 - ✅ es ist einstellbar wie viele auditiv-targets, visuell-targets und beides-targets es gibt
-- Feedback
-    - einzelnes Feedback für sound (beep) und visuell (smiley)
-        - Wenn ich audio drücken müsste gibts n beep
-        - Wenn ich visuell drücken müsste gibts n smiley
-        - Wenn ich beides drücken müsste gibts n beep und n smiley
-        - Wenn ich nichts drücken müsste gibts n beep und n smiley
-    - immer, wenn es feedback gibt, wird die Matrix ausgegraut, egal, ob ein smiley angezeigt wird oder nicht
+- ✅ Feedback
+    - ✅ einzelnes Feedback für sound (beep) und visuell (smiley)
+        - ✅ Wenn ich audio drücken hätte müssen gibts n beep
+        - ✅ Wenn ich visuell drücken hätte müssen gibts n smiley
+        - ✅ Wenn ich beides drücken hätte müssen gibts n beep und n smiley
+        - ✅ Wenn ich nichts drücken hätte müssen gibts n beep und n smiley
+    - ✅ immer, wenn es feedback gibt, wird die Matrix ausgegraut, egal, ob ein smiley angezeigt wird oder nicht
 - studien-ergebnisse irgendwie anzeigbar machen
   - durchschnitts n
   - maximal (= höchstes) n

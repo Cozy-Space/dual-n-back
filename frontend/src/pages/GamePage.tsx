@@ -18,6 +18,7 @@ import { Either } from '../components/Either'
 import { NChangeNotification } from '../components/NChangeNotification'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { DevContainer } from '../components/DevContainer'
+import { Feedback, FeedbackType } from '../components/Feedback'
 
 // occurs in the order of the enum
 type GamePhase =
@@ -45,6 +46,7 @@ export function GamePage() {
   const [currentBlockNr, setCurrentBlockNr] = useState<number>(0)
   const [listOfN, setListOfN] = useState<number[]>([])
   const [userReaction, setUserReaction] = useState<ReactionType>('none')
+  const [feedback, setFeedback] = useState<FeedbackType>('none')
   const {
     data: blockData,
     status: blockStatus,
@@ -120,7 +122,7 @@ export function GamePage() {
         }
         break
       case 'feedback':
-        timeoutMs = 1
+        timeoutMs = 0
         callback = () => {
           // give feedback to trial if possible
           if (currentTrial !== undefined && currentTrialIndex !== undefined) {
@@ -163,21 +165,22 @@ export function GamePage() {
                 { correct: true }
               ])
             } else {
-              let shouldHavePressed: string
+              let fb: FeedbackType
               if (
                 currentTrial.is_auditory_target &&
                 currentTrial.is_visual_target
               ) {
-                shouldHavePressed = 'both'
+                fb = 'both'
               } else if (currentTrial.is_auditory_target) {
-                shouldHavePressed = 'sound'
+                fb = 'audio'
               } else if (currentTrial.is_visual_target) {
-                shouldHavePressed = 'vision'
+                fb = 'visual'
               } else {
-                shouldHavePressed = 'none'
+                // clicked none, but he should have clicked something
+                fb = 'both'
               }
-              // Incorrect
-              console.log('Incorrect! Should have pressed', shouldHavePressed)
+              setFeedback(fb)
+              console.log('Incorrect! Should have pressed', fb)
               setTrialCorrectness((prevState) => [
                 ...prevState,
                 { correct: false }
@@ -192,6 +195,7 @@ export function GamePage() {
         timeoutMs = 1200
         callback = () => {
           // proceed to next trial
+          setFeedback('none')
           if (!blockData || currentTrialIndex === undefined) {
             return
           }
@@ -243,120 +247,125 @@ export function GamePage() {
   }, [nStatus, nData]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <CenteringContainer>
-      <div
-        className={
-          'flex h-screen w-screen flex-col items-center justify-center'
-        }
-      >
-        <DevContainer className={'fixed left-0 top-0 z-10'}>
-          <Dev
-            values={{
-              currentBlockNr,
-              n,
-              currentTrialIndex: String(currentTrialIndex),
-              gamePhase,
-              blockLength: blockData?.trials.length,
-              visionPosition: currentTrial?.vision_position,
-              imageContent: (currentTrial?.image_file ?? -100) + 1,
-              shouldClickVision: currentTrial?.is_visual_target ? (
-                <DevText truthy={true} />
-              ) : (
-                <DevText truthy={false} />
-              ),
-              shouldClickSound: currentTrial?.is_auditory_target ? (
-                <DevText truthy={true} />
-              ) : (
-                <DevText truthy={false} />
-              ),
-              userReaction,
-              trialCorrectness: trialCorrectness.map((r) =>
-                r.correct ? '✅' : '❌'
-              ),
-              blockQStatus: blockStatus,
-              nQStatus: nStatus
-            }}
-          />
-        </DevContainer>
-        <Either
-          className={'flex size-5/6 flex-col items-center justify-center'}
-          a={NChangeNotification({ n })}
-          b={
-            <Matrix
-              activeId={
-                gamePhase === 'queue'
-                  ? currentTrial?.vision_position
-                  : undefined
-              }
-              imageId={
-                gamePhase === 'queue' ? currentTrial?.image_file : undefined
-              }
+    <>
+      <CenteringContainer>
+        <div
+          className={
+            'flex h-screen w-screen flex-col items-center justify-center'
+          }
+        >
+          <DevContainer className={'fixed left-0 top-0 z-10'}>
+            <Dev
+              values={{
+                currentBlockNr,
+                n,
+                currentTrialIndex: String(currentTrialIndex),
+                gamePhase,
+                blockLength: blockData?.trials.length,
+                visionPosition: currentTrial?.vision_position,
+                imageContent: (currentTrial?.image_file ?? -100) + 1,
+                shouldClickVision: currentTrial?.is_visual_target ? (
+                  <DevText truthy={true} />
+                ) : (
+                  <DevText truthy={false} />
+                ),
+                shouldClickSound: currentTrial?.is_auditory_target ? (
+                  <DevText truthy={true} />
+                ) : (
+                  <DevText truthy={false} />
+                ),
+                userReaction,
+                trialCorrectness: trialCorrectness.map((r) =>
+                  r.correct ? '✅' : '❌'
+                ),
+                blockQStatus: blockStatus,
+                nQStatus: nStatus
+              }}
             />
-          }
-          showAWhen={gamePhase === 'notify_user_about_n_change'}
-        />
-        <Sound
-          soundId={gamePhase === 'queue' ? currentTrial?.sound_file : undefined}
-          muted={muted}
-        />
-        <div className={'mt-4 flex gap-8'}>
-          <button
-            className={
-              'cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
+          </DevContainer>
+          <Either
+            className={'flex size-5/6 flex-col items-center justify-center'}
+            a={NChangeNotification({ n })}
+            b={
+              <Matrix
+                activeId={
+                  gamePhase === 'queue'
+                    ? currentTrial?.vision_position
+                    : undefined
+                }
+                imageId={
+                  gamePhase === 'queue' ? currentTrial?.image_file : undefined
+                }
+              />
             }
-            onClick={() => setUserReaction('visual')}
-          >
-            <EyeIcon className={'size-10 cursor-pointer text-white'} />
-          </button>
-          <button
-            className={
-              'cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
+            showAWhen={gamePhase === 'notify_user_about_n_change'}
+          />
+          <Sound
+            soundId={
+              gamePhase === 'queue' ? currentTrial?.sound_file : undefined
             }
-            onClick={() => setUserReaction('auditory')}
-          >
-            <SpeakerWaveIcon className={'size-10 text-white'} />
-          </button>
-          <button
-            className={
-              'cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
-            }
-            onClick={() => setUserReaction('auditory_visual')}
-          >
-            <PlusCircleIcon className={'size-10 text-white'} />
-          </button>
+            muted={muted}
+          />
+          <div className={'mt-4 flex gap-8'}>
+            <button
+              className={
+                'cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
+              }
+              onClick={() => setUserReaction('visual')}
+            >
+              <EyeIcon className={'size-10 cursor-pointer text-white'} />
+            </button>
+            <button
+              className={
+                'cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
+              }
+              onClick={() => setUserReaction('auditory')}
+            >
+              <SpeakerWaveIcon className={'size-10 text-white'} />
+            </button>
+            <button
+              className={
+                'cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
+              }
+              onClick={() => setUserReaction('auditory_visual')}
+            >
+              <PlusCircleIcon className={'size-10 text-white'} />
+            </button>
+          </div>
         </div>
-      </div>
-      <DevContainer
-        className={
-          'absolute left-full top-full flex -translate-x-full -translate-y-full flex-col gap-2'
-        }
-      >
-        <button
+        <DevContainer
           className={
-            'cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
+            'absolute left-full top-full flex -translate-x-full -translate-y-full flex-col gap-2'
           }
-          onClick={() => {
-            setMuted((prevState) => !prevState)
-          }}
         >
-          {muted ? (
-            <SpeakerXMarkIcon className={'size-10 text-white'} />
-          ) : (
-            <SpeakerWaveIcon className={'size-10 text-white'} />
-          )}
-        </button>
-        <button
-          className={
-            'cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
-          }
-          onClick={() => {
-            console.clear()
-            navigate('/')
-          }}
-        >
-          <ArrowPathIcon className={'size-10 text-white'} />
-        </button>
-      </DevContainer>
-    </CenteringContainer>
+          <button
+            className={
+              'cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
+            }
+            onClick={() => {
+              setMuted((prevState) => !prevState)
+            }}
+          >
+            {muted ? (
+              <SpeakerXMarkIcon className={'size-10 text-white'} />
+            ) : (
+              <SpeakerWaveIcon className={'size-10 text-white'} />
+            )}
+          </button>
+          <button
+            className={
+              'cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
+            }
+            onClick={() => {
+              console.clear()
+              navigate('/')
+            }}
+          >
+            <ArrowPathIcon className={'size-10 text-white'} />
+          </button>
+        </DevContainer>
+      </CenteringContainer>
+      <Feedback feedback={feedback} muted={muted} />
+    </>
   )
 }
