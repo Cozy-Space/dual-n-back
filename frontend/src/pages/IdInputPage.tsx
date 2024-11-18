@@ -29,7 +29,7 @@ export function IdInputPage() {
             htmlFor="userId"
             className="mb-2 block text-sm font-bold text-gray-700"
           >
-            Probanden-ID:
+            Proband:innen-ID:
           </label>
           <input
             type="text"

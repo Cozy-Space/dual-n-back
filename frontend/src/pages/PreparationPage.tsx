@@ -45,13 +45,14 @@ export function PreparationPage() {
     <CenteringContainer>
       <Card>
         <span className={'mb-2 block text-sm'}>
-          Bitte überprüfen Sie Ihre <b>Probanden-ID</b> und stellen Sie die{' '}
-          <b>Lautstärke</b> so ein, dass Sie den Test-Ton gut hören können.
+          Bitte überprüfen Sie Ihre <b>Proband:innen-ID</b> und stellen Sie die{' '}
+          <b>Lautstärke</b> Ihres Gerätes so ein, dass Sie den Test-Ton gut
+          hören können.
         </span>
         <div className={'my-8'}>
           <div className={'flex'}>
             <span className={'mb-2 block text-sm'}>
-              Probanden-ID: {experimenteeId}
+              Proband:innen-ID: {experimenteeId}
             </span>
             <PencilIcon
               onClick={changeExperimenteeId}
@@ -74,8 +75,8 @@ export function PreparationPage() {
             'w-full rounded-md bg-blue-500 px-4 py-2 text-sm text-white transition duration-1000 hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-300'
           }
         >
-          Die Probanden-ID ist korrekt, die Laustärke ist eingestellt und ich
-          bin bereit mit dem Spiel zu beginnen
+          Die Proband:innen-ID ist korrekt, die Laustärke ist passend
+          eingestellt und ich bin bereit mit dem Spiel zu beginnen
         </button>
         <DevContainer className={'mt-8'}>
           <button
