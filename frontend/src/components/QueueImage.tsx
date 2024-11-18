@@ -1,14 +1,17 @@
 interface QueueImageProps {
   imageId: number | undefined
+  className?: string
 }
 
 export function QueueImage(props: QueueImageProps) {
   return (
-    <div>
-      {props.imageId !== undefined && (
-        <img src={idToAsset(props.imageId)} alt={'Queue Image'} />
-      )}
-    </div>
+    props.imageId !== undefined && (
+      <img
+        className={props.className}
+        src={idToAsset(props.imageId)}
+        alt={'Queue Image'}
+      />
+    )
   )
 }
 
