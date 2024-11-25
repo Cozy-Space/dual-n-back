@@ -8,7 +8,6 @@ import { Matrix } from '../components/Matrix'
 import {
   ArrowPathIcon,
   EyeIcon,
-  PlusCircleIcon,
   SpeakerWaveIcon,
   SpeakerXMarkIcon
 } from '@heroicons/react/24/solid'
@@ -19,6 +18,7 @@ import { NChangeNotification } from '../components/NChangeNotification'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { DevContainer } from '../components/DevContainer'
 import { Feedback, FeedbackType } from '../components/Feedback'
+import { PlusIcon } from '@heroicons/react/24/outline'
 
 // occurs in the order of the enum
 type GamePhase =
@@ -316,27 +316,33 @@ export function GamePage() {
           <div className={'mt-4 flex gap-8'}>
             <button
               className={
-                'cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
+                'flex cursor-pointer flex-row rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
               }
               onClick={() => setUserReaction('visual')}
             >
-              <EyeIcon className={'size-10 cursor-pointer text-white'} />
+              <PlusIcon className={'invisible size-10 text-white'} />
+              <EyeIcon className={'size-10 text-white'} />
+              <SpeakerWaveIcon className={'invisible size-10 text-white'} />
             </button>
             <button
               className={
-                'cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
+                'flex cursor-pointer flex-row rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
               }
               onClick={() => setUserReaction('auditory')}
             >
+              <EyeIcon className={'invisible size-10 text-white'} />
               <SpeakerWaveIcon className={'size-10 text-white'} />
+              <PlusIcon className={'invisible size-10 text-white'} />
             </button>
             <button
               className={
-                'cursor-pointer rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
+                'flex cursor-pointer flex-row rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
               }
               onClick={() => setUserReaction('auditory_visual')}
             >
-              <PlusCircleIcon className={'size-10 text-white'} />
+              <EyeIcon className={'size-10 text-white'} />
+              <PlusIcon className={'size-10 text-white'} />
+              <SpeakerWaveIcon className={'size-10 text-white'} />
             </button>
           </div>
         </div>

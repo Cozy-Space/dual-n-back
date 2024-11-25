@@ -34,7 +34,7 @@ export function PreparationPage() {
   }
   const startGame = () => {
     if (configStatus === 'success') {
-      navigate(`/game?id=${experimenteeId}`)
+      navigate(`/instruction?id=${experimenteeId}`)
     } else {
       alert('Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.')
       navigate(`/?id=${experimenteeId}`)

@@ -17,8 +17,8 @@ export function NChangeNotification(props: NChangeNotificationProps) {
       )}
     >
       <span className={'text-center text-2xl'}>
-        In den folgenden Durchgängen sollen Sie immer per Knopfdruck reagieren,
-        wenn der Stimulus identisch ist, wie der Stimulus{' '}
+        In den folgenden Durchgängen gibt es eine Übereinstimmung, wenn die
+        Position/das Wort identisch ist, wie die Position/ das Wort{' '}
         <b>{mapNToDurchgang(props.n)}</b> zuvor.
       </span>
       <TimedProgressBar durationMs={props.timeout} className={'mt-14'} />
