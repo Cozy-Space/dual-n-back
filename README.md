@@ -22,10 +22,9 @@ Todo:
     - prozent richtige reaktion (insgesamt, visuell, auditiv, beides, keines)
     - prozent falsche reaktion (insgesamt, visuell, auditiv, beides, keines)
     - wie oft welcher Mensch gespielt hat (vollständig, abgebrochen, error)
-    - gedanken: Wir speichern einfach alles. Pro Trial welche Position, welches Bild, welcher Sound, wie reagiert wurde,
-      wie reagiert hätte müssen. Und auch die Prozente von oben.
+    - gedanken: Wir speichern einfach alles. Pro Trial welche Position, welches Bild, welcher Sound, wie reagiert wurde, wie reagiert hätte müssen. Und auch die Prozente von oben.
         - Pro User pro Tag gibts dann einfach ein file, und da steht dann alles drin.
-- Weiter-Knopf zu N-Change hinzufügen
+- ✅ Weiter-Knopf zu N-Change hinzufügen
 - ✅ N-Change bei jedem neuen Block anzeigen
 - Füge Lizenzhinweise hinzu
 - ✅ Instruktionen bauen
