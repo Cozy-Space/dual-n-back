@@ -1,4 +1,4 @@
-import { Dev, DevText } from 'components/Dev'
+import { Dev, DevFeedback, DevText } from 'components/Dev'
 import { useBlockQuery } from 'queries/BlockQuery'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -17,9 +17,10 @@ import { Either } from '../components/Either'
 import { NChangeNotification } from '../components/NChangeNotification'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { DevContainer } from '../components/DevContainer'
-import { Feedback } from '../components/Feedback'
+import { Feedback, FeedbackToGive } from '../components/Feedback'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import { calculateFeedback } from '../utils/FeedbackCalculation'
+import { classNames } from '../utils/classnames'
 
 // occurs in the order of the enum
 type GamePhase =
@@ -31,8 +32,6 @@ type GamePhase =
   | 'feedback'
   | 'wait_for_feedback_is_done'
   | 'block_finished'
-
-const notify_user_about_n_change_timeout = 10000
 
 export type ReactionType = 'none' | 'auditory' | 'visual' | 'auditory_visual'
 
@@ -49,7 +48,7 @@ export function GamePage() {
   const [currentBlockNr, setCurrentBlockNr] = useState<number>(0)
   const [listOfN, setListOfN] = useState<number[]>([])
   const [userReaction, setUserReaction] = useState<ReactionType>('none')
-  const [feedback, setFeedback] = useState<Feedback>({
+  const [feedback, setFeedback] = useState<FeedbackToGive>({
     visual: 'none',
     auditory: 'none'
   })
@@ -102,9 +101,9 @@ export function GamePage() {
         }
         break
       case 'notify_user_about_n_change':
-        timeoutMs = notify_user_about_n_change_timeout
+        timeoutMs = 0
         callback = () => {
-          setGamePhase('starting')
+          // do nothing and wait for user to click start
         }
         break
       case 'starting':
@@ -227,6 +226,7 @@ export function GamePage() {
                   <DevText truthy={false} />
                 ),
                 userReaction,
+                feedback: <DevFeedback feedback={feedback} />,
                 trialCorrectness: trialCorrectness.map((r) =>
                   r.correct ? '✅' : '❌'
                 ),
@@ -240,7 +240,9 @@ export function GamePage() {
             a={
               <NChangeNotification
                 n={n}
-                timeout={notify_user_about_n_change_timeout}
+                onStart={() => {
+                  setGamePhase('starting')
+                }}
               />
             }
             b={
@@ -263,7 +265,14 @@ export function GamePage() {
             }
             muted={muted}
           />
-          <div className={'mt-4 flex gap-8'}>
+          <div
+            className={classNames(
+              'mt-4 flex gap-8',
+              gamePhase === 'notify_user_about_n_change'
+                ? 'opacity-0'
+                : 'opacity-100'
+            )}
+          >
             <button
               className={
                 'flex cursor-pointer flex-row rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'

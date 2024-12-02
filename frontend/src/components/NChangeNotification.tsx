@@ -1,10 +1,9 @@
 import { classNames } from '../utils/classnames'
 import React from 'react'
-import { TimedProgressBar } from './TimedProgressBar'
 
 interface NChangeNotificationProps {
   n: number
-  timeout: number
+  onStart: () => void
   className?: string | undefined
 }
 
@@ -21,7 +20,15 @@ export function NChangeNotification(props: NChangeNotificationProps) {
         Position/das Wort identisch ist, wie die Position/ das Wort{' '}
         <b>{mapNToDurchgang(props.n)}</b> zuvor.
       </span>
-      <TimedProgressBar durationMs={props.timeout} className={'mt-14'} />
+
+      <button
+        className={
+          'mt-8 w-1/4 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700'
+        }
+        onClick={props.onStart}
+      >
+        Start
+      </button>
     </div>
   )
 }

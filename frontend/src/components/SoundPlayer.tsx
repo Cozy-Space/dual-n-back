@@ -34,7 +34,7 @@ export function SoundPlayer(props: SoundPlayerProps) {
         }
       }
     }
-  }, [])
+  }, [props.soundFile])
 
   const playPause = () => {
     if (wavesurferRef.current) {

@@ -1,11 +1,11 @@
 import { ReactionType } from '../pages/GamePage'
-import { Feedback } from '../components/Feedback'
+import { FeedbackToGive } from '../components/Feedback'
 import { Trial } from 'types'
 
 export function calculateFeedback(
   userReaction: ReactionType,
   currentTrial: Trial
-): { correct: boolean; feedback: Feedback } {
+): { correct: boolean; feedback: FeedbackToGive } {
   if (currentTrial.is_auditory_target && currentTrial.is_visual_target) {
     return calculateFeedbackForAuditoryAndVisualTarget(userReaction)
   } else if (currentTrial.is_auditory_target) {
@@ -19,7 +19,7 @@ export function calculateFeedback(
 
 function calculateFeedbackForNoTarget(userReaction: ReactionType): {
   correct: boolean
-  feedback: Feedback
+  feedback: FeedbackToGive
 } {
   switch (userReaction) {
     case 'auditory_visual':
@@ -59,7 +59,7 @@ function calculateFeedbackForNoTarget(userReaction: ReactionType): {
 
 function calculateFeedbackForVisualTarget(userReaction: ReactionType): {
   correct: boolean
-  feedback: Feedback
+  feedback: FeedbackToGive
 } {
   switch (userReaction) {
     case 'auditory_visual':
@@ -99,7 +99,7 @@ function calculateFeedbackForVisualTarget(userReaction: ReactionType): {
 
 function calculateFeedbackForAuditoryTarget(userReaction: ReactionType): {
   correct: boolean
-  feedback: Feedback
+  feedback: FeedbackToGive
 } {
   switch (userReaction) {
     case 'auditory_visual':
@@ -141,7 +141,7 @@ function calculateFeedbackForAuditoryAndVisualTarget(
   userReaction: ReactionType
 ): {
   correct: boolean
-  feedback: Feedback
+  feedback: FeedbackToGive
 } {
   switch (userReaction) {
     case 'auditory_visual':
