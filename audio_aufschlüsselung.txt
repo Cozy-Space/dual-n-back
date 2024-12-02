@@ -1,0 +1,12 @@
+Weil es aus Code-Sicht einfacher ist, dass die Dateien a1.mp3 bis a10.mp3 heißen, habe ich mich dazu entschieden, die Audiofiles umzubenennen. Das ist auch der Grund, warum die Datei audio_aufschlüsselung.txt existiert. In dieser Datei ist festgehalten, welches Audiofile zu welchem Text gehört.
+
+a1.mp3 -> Pappe_female.mp3
+a2.mp3 -> Schraube_female.mp3
+a3.mp3 -> Karton_male.mp3
+a4.mp3 -> Ding_male.mp3
+a5.mp3 -> Tod_female.mp3
+a6.mp3 -> Krieg_female.mp3
+a7.mp3 -> Furcht_female.mp3
+a8.mp3 -> Angst_male.mp3
+a9.mp3 -> Horror_male.mp3
+a10.mp3 -> Drohung_male.mp3
