@@ -1,11 +1,17 @@
 import { classNames } from '../utils/classnames'
 import React, { useEffect, useRef } from 'react'
 
-export type FeedbackType = 'visual' | 'audio' | 'both' | 'none'
+export type FeedbackType = 'positive' | 'negative' | 'none'
+export type Feedback = { visual: FeedbackType; auditory: FeedbackType }
+
+const POSITIVE_SMILEY_FILE = '/images/positiveSmiley.png'
+const NEGATIVE_SMILEY_FILE = '/images/negativeSmiley.png'
+const POSITIVE_JINGLE_FILE = '/audio/positiveJingle.mp3'
+const NEGATIVE_JINGLE_FILE = '/audio/negativeJingle.mp3'
 
 interface FeedbackProps {
   className?: string | undefined
-  feedback: FeedbackType
+  feedback: Feedback
   muted: boolean
 }
 
@@ -15,7 +21,7 @@ export function Feedback(props: FeedbackProps) {
   useEffect(() => {
     if (
       audioRef.current &&
-      (props.feedback === 'audio' || props.feedback === 'both') &&
+      getJingleForFeedback(props.feedback) !== '' &&
       !props.muted
     ) {
       audioRef.current.load()
@@ -33,16 +39,16 @@ export function Feedback(props: FeedbackProps) {
           : 'opacity-0 pointer-events-none'
       )}
     >
-      {shouldShowVisual(props.feedback) && (
+      {getSmileyForFeedback(props.feedback) !== '' && (
         <img
           className={'max-w-lg'}
-          src="/images/visuallyFeedback.jpg"
+          src={getSmileyForFeedback(props.feedback)}
           alt="visually feedback"
         />
       )}
-      {shouldPlayAudio(props.feedback, props.muted) && (
+      {!props.muted && getJingleForFeedback(props.feedback) !== '' && (
         <audio ref={audioRef}>
-          <source src="/audio/auditoryFeedback.mp3" type="audio/mp3" />
+          <source src={getJingleForFeedback(props.feedback)} type="audio/mp3" />
           Your browser does not support the audio element.
         </audio>
       )}
@@ -50,14 +56,24 @@ export function Feedback(props: FeedbackProps) {
   )
 }
 
-function shouldPlayAudio(feedback: FeedbackType, muted: boolean) {
-  return (feedback === 'audio' || feedback === 'both') && !muted
+function getJingleForFeedback(feedback: Feedback): string {
+  if (feedback.auditory === 'positive') {
+    return POSITIVE_JINGLE_FILE
+  } else if (feedback.auditory === 'negative') {
+    return NEGATIVE_JINGLE_FILE
+  }
+  return ''
 }
 
-function shouldShowVisual(feedback: FeedbackType) {
-  return feedback === 'visual' || feedback === 'both'
+function getSmileyForFeedback(feedback: Feedback): string {
+  if (feedback.visual === 'positive') {
+    return POSITIVE_SMILEY_FILE
+  } else if (feedback.visual === 'negative') {
+    return NEGATIVE_SMILEY_FILE
+  }
+  return ''
 }
 
-function shouldShowFeedback(feedback: FeedbackType) {
-  return feedback !== 'none'
+function shouldShowFeedback(feedback: Feedback): boolean {
+  return feedback.visual !== 'none' || feedback.auditory !== 'none'
 }

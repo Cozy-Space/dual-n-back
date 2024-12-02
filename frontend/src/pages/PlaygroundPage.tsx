@@ -4,7 +4,13 @@ import { Feedback } from '../components/Feedback'
 export function PlaygroundPage() {
   return (
     <CenteringContainer>
-      <Feedback feedback={'both'} muted={false} />
+      <Feedback
+        feedback={{
+          visual: 'positive',
+          auditory: 'positive'
+        }}
+        muted={false}
+      />
     </CenteringContainer>
   )
 }

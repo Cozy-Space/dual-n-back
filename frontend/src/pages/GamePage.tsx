@@ -17,8 +17,9 @@ import { Either } from '../components/Either'
 import { NChangeNotification } from '../components/NChangeNotification'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { DevContainer } from '../components/DevContainer'
-import { Feedback, FeedbackType } from '../components/Feedback'
+import { Feedback } from '../components/Feedback'
 import { PlusIcon } from '@heroicons/react/24/outline'
+import { calculateFeedback } from '../utils/FeedbackCalculation'
 
 // occurs in the order of the enum
 type GamePhase =
@@ -33,7 +34,7 @@ type GamePhase =
 
 const notify_user_about_n_change_timeout = 10000
 
-type ReactionType = 'none' | 'auditory' | 'visual' | 'auditory_visual'
+export type ReactionType = 'none' | 'auditory' | 'visual' | 'auditory_visual'
 
 export function GamePage() {
   const navigate = useNavigate()
@@ -48,7 +49,10 @@ export function GamePage() {
   const [currentBlockNr, setCurrentBlockNr] = useState<number>(0)
   const [listOfN, setListOfN] = useState<number[]>([])
   const [userReaction, setUserReaction] = useState<ReactionType>('none')
-  const [feedback, setFeedback] = useState<FeedbackType>('none')
+  const [feedback, setFeedback] = useState<Feedback>({
+    visual: 'none',
+    auditory: 'none'
+  })
   const {
     data: blockData,
     status: blockStatus,
@@ -126,68 +130,14 @@ export function GamePage() {
       case 'feedback':
         timeoutMs = 0
         callback = () => {
-          // give feedback to trial if possible
+          // give feedback to trial
           if (currentTrial !== undefined && currentTrialIndex !== undefined) {
-            if (
-              userReaction === 'auditory_visual' &&
-              currentTrial.is_auditory_target &&
-              currentTrial.is_visual_target
-            ) {
-              // Correct (auditory and visual)
-              setTrialCorrectness((prevState) => [
-                ...prevState,
-                { correct: true }
-              ])
-            } else if (
-              userReaction === 'visual' &&
-              currentTrial.is_visual_target
-            ) {
-              // Correct (vision)
-              setTrialCorrectness((prevState) => [
-                ...prevState,
-                { correct: true }
-              ])
-            } else if (
-              userReaction === 'auditory' &&
-              currentTrial.is_auditory_target
-            ) {
-              // Correct (sound)
-              setTrialCorrectness((prevState) => [
-                ...prevState,
-                { correct: true }
-              ])
-            } else if (
-              userReaction === 'none' &&
-              !currentTrial.is_visual_target &&
-              !currentTrial.is_auditory_target
-            ) {
-              // Correct (none)
-              setTrialCorrectness((prevState) => [
-                ...prevState,
-                { correct: true }
-              ])
-            } else {
-              let fb: FeedbackType
-              if (
-                currentTrial.is_auditory_target &&
-                currentTrial.is_visual_target
-              ) {
-                fb = 'both'
-              } else if (currentTrial.is_auditory_target) {
-                fb = 'audio'
-              } else if (currentTrial.is_visual_target) {
-                fb = 'visual'
-              } else {
-                // clicked none, but he should have clicked something
-                fb = 'both'
-              }
-              setFeedback(fb)
-              console.log('Incorrect! Should have pressed', fb)
-              setTrialCorrectness((prevState) => [
-                ...prevState,
-                { correct: false }
-              ])
-            }
+            const { correct, feedback } = calculateFeedback(
+              userReaction,
+              currentTrial
+            )
+            setTrialCorrectness((prevState) => [...prevState, { correct }])
+            setFeedback(feedback)
           }
           setUserReaction('none')
           setGamePhase('wait_for_feedback_is_done')
@@ -197,7 +147,7 @@ export function GamePage() {
         timeoutMs = 1200
         callback = () => {
           // proceed to next trial
-          setFeedback('none')
+          setFeedback({ visual: 'none', auditory: 'none' })
           if (!blockData || currentTrialIndex === undefined) {
             return
           }

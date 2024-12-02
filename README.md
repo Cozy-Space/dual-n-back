@@ -6,10 +6,7 @@ Todo:
 - ✅ Targettrials können sowohl auditiv ALS AUCH visuell sein
 - ✅ dritten reaktionsknopf einbauen, der "beides" abdeckt
     - ✅ wenn mehrere Knöpfe gedrückt werden, wird der letzte Knopf gewertet, um korrekturen zu erlauben
-    - ✅ wenn ich "beides" hätte drücken müssen, aber nur "sound" drücke, welches feedback bekomme ich und ist die
-      reaktion "richtig" oder "falsch" oder was neues?
-        - ✅ wenn ich "beides" hätte drücken müssen, aber nur "sound" drücke, bekomme ich das feedback "falsch" für
-          BEIDES und die reaktion wird als "falsch" gewertet
+    - ✅ Feedback-Wahrheitstabelle einbauen
 - ✅ prozente der targets zu ganzzahlen machen
 - ✅ es ist einstellbar wie viele auditiv-targets, visuell-targets und beides-targets es gibt
 - ✅ Feedback
@@ -31,5 +28,6 @@ Todo:
 - Weiter-Knopf zu N-Change hinzufügen
 - ✅ N-Change bei jedem neuen Block anzeigen
 - Füge Lizenzhinweise hinzu
-- Instruktionen bauen
+- ✅ Instruktionen bauen
+- Seite 1 in zwei Seiten umbauen
 
