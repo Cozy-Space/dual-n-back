@@ -8,6 +8,7 @@ import { PencilIcon } from '@heroicons/react/20/solid'
 import { useConfigQuery } from '../queries/ConfigQuery'
 import { DevContainer } from '../components/DevContainer'
 import { audioCues, imageCues, preloadCues } from '../utils/preloadCues'
+import { useUserIdQuery } from '../queries/UserIdQuery'
 
 export function PreparationPage() {
   const navigate = useNavigate()
@@ -15,7 +16,7 @@ export function PreparationPage() {
   const experimenteeId = searchParams.get('id')
   const [playedTestAudio, setPlayedTestAudio] = useState(false)
   const [preloadedCues, setPreloadedCues] = useState(false)
-
+  const { data: userIdFileName } = useUserIdQuery(experimenteeId)
   const { data: configData, status: configStatus } = useConfigQuery()
 
   useEffect(() => {
