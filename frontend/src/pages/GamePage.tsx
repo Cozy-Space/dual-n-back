@@ -1,4 +1,4 @@
-import { Dev, DevFeedback, DevText } from 'components/Dev'
+import { Dev, DevText } from 'components/Dev'
 import { useBlockQuery } from 'queries/BlockQuery'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -17,10 +17,10 @@ import { Either } from '../components/Either'
 import { NChangeNotification } from '../components/NChangeNotification'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { DevContainer } from '../components/DevContainer'
-import { Feedback, FeedbackToGive } from '../components/Feedback'
+import { Feedback, FeedbackType } from '../components/Feedback'
 import { PlusIcon } from '@heroicons/react/24/outline'
-import { calculateFeedback } from '../utils/FeedbackCalculation'
 import { classNames } from '../utils/classnames'
+import { calculateTrialCorrectness } from '../utils/calculateTrialCorrectness'
 
 // occurs in the order of the enum
 type GamePhase =
@@ -48,10 +48,7 @@ export function GamePage() {
   const [currentBlockNr, setCurrentBlockNr] = useState<number>(0)
   const [listOfN, setListOfN] = useState<number[]>([])
   const [userReaction, setUserReaction] = useState<ReactionType>('none')
-  const [feedback, setFeedback] = useState<FeedbackToGive>({
-    visual: 'none',
-    auditory: 'none'
-  })
+  const [feedback, setFeedback] = useState<FeedbackType>('none')
   const {
     data: blockData,
     status: blockStatus,
@@ -131,12 +128,12 @@ export function GamePage() {
         callback = () => {
           // give feedback to trial
           if (currentTrial !== undefined && currentTrialIndex !== undefined) {
-            const { correct, feedback } = calculateFeedback(
+            const correct = calculateTrialCorrectness(
               userReaction,
               currentTrial
             )
             setTrialCorrectness((prevState) => [...prevState, { correct }])
-            setFeedback(feedback)
+            setFeedback(correct ? 'positive' : 'negative')
           }
           setUserReaction('none')
           setGamePhase('wait_for_feedback_is_done')
@@ -146,7 +143,7 @@ export function GamePage() {
         timeoutMs = 1200
         callback = () => {
           // proceed to next trial
-          setFeedback({ visual: 'none', auditory: 'none' })
+          setFeedback('none')
           if (!blockData || currentTrialIndex === undefined) {
             return
           }
@@ -226,7 +223,7 @@ export function GamePage() {
                   <DevText truthy={false} />
                 ),
                 userReaction,
-                feedback: <DevFeedback feedback={feedback} />,
+                feedback: feedback,
                 trialCorrectness: trialCorrectness.map((r) =>
                   r.correct ? '✅' : '❌'
                 ),

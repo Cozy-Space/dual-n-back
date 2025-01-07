@@ -16,6 +16,13 @@ Todo:
         - ✅ Wenn ich beides drücken hätte müssen gibts n beep und n smiley
         - ✅ Wenn ich nichts drücken hätte müssen gibts n beep und n smiley
     - ✅ immer, wenn es feedback gibt, wird die Matrix ausgegraut, egal, ob ein smiley angezeigt wird oder nicht
+- ✅ Weiter-Knopf zu N-Change hinzufügen
+- ✅ N-Change bei jedem neuen Block anzeigen
+- ✅ Instruktionen bauen
+- ✅ Instruktionen: Seite 1 in zwei Seiten umbauen
+- ✅ Auf Preparation-Page alle Bilder und Sounds hidden laden
+- ✅ Feedback noch mal anpassen (Tests haben ergeben, dass das so unverständlich ist)
+    - ✅ Instruktionen dementsprechend auch anpassen
 - studien-ergebnisse irgendwie anzeigbar machen
     - durchschnitts n
     - maximal (= höchstes) n
@@ -24,9 +31,11 @@ Todo:
     - wie oft welcher Mensch gespielt hat (vollständig, abgebrochen, error)
     - gedanken: Wir speichern einfach alles. Pro Trial welche Position, welches Bild, welcher Sound, wie reagiert wurde, wie reagiert hätte müssen. Und auch die Prozente von oben.
         - Pro User pro Tag gibts dann einfach ein file, und da steht dann alles drin.
-- ✅ Weiter-Knopf zu N-Change hinzufügen
-- ✅ N-Change bei jedem neuen Block anzeigen
-- Füge Lizenzhinweise hinzu
-- ✅ Instruktionen bauen
-- Seite 1 in zwei Seiten umbauen
+- README.md
+    - Beschreibung
+    - Installation
+    - Konfiguration
+    - Credits
+    - Lizenzhinweise
+- Rundenzahl auf 20 erhöhen
 

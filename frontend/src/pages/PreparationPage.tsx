@@ -7,17 +7,22 @@ import BahnSound from 'assets/bahn.mp3'
 import { PencilIcon } from '@heroicons/react/20/solid'
 import { useConfigQuery } from '../queries/ConfigQuery'
 import { DevContainer } from '../components/DevContainer'
+import { audioCues, imageCues, preloadCues } from '../utils/preloadCues'
 
 export function PreparationPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const experimenteeId = searchParams.get('id')
   const [playedTestAudio, setPlayedTestAudio] = useState(false)
+  const [preloadedCues, setPreloadedCues] = useState(false)
+
   const { data: configData, status: configStatus } = useConfigQuery()
 
   useEffect(() => {
     if (!experimenteeId) {
       navigate(`/`)
+    } else {
+      preloadCues(audioCues, imageCues).then(() => setPreloadedCues(true))
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -33,8 +38,12 @@ export function PreparationPage() {
     setPlayedTestAudio(true)
   }
   const startGame = () => {
-    if (configStatus === 'success') {
+    if (configStatus === 'success' && preloadedCues) {
       navigate(`/instruction?id=${experimenteeId}`)
+    } else if (!preloadedCues) {
+      alert(
+        'Das Spiel ist noch nicht bereit zum Starten. Einige Dateien werden noch geladen. Bitte warten Sie einige Sekunden und klicken Sie dann erneut auf den blauen Knopf.'
+      )
     } else {
       alert('Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.')
       navigate(`/?id=${experimenteeId}`)

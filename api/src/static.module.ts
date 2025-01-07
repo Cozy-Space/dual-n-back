@@ -8,6 +8,9 @@ const reactAppDir: string = join(__dirname, 'static');
   imports: [
     ServeStaticModule.forRoot({
       rootPath: reactAppDir,
+      serveStaticOptions: {
+        maxAge: 7200000,
+      },
     }),
   ],
 })

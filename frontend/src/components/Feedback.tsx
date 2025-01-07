@@ -2,10 +2,6 @@ import { classNames } from '../utils/classnames'
 import React, { useEffect, useRef } from 'react'
 
 export type FeedbackType = 'positive' | 'negative' | 'none'
-export type FeedbackToGive = {
-  visual: FeedbackType
-  auditory: FeedbackType
-}
 
 const POSITIVE_SMILEY_FILE = '/images/positiveSmiley.png'
 const NEGATIVE_SMILEY_FILE = '/images/negativeSmiley.png'
@@ -14,7 +10,7 @@ const NEGATIVE_JINGLE_FILE = '/audio/negativeJingle.mp3'
 
 interface FeedbackProps {
   className?: string | undefined
-  feedback: FeedbackToGive
+  feedback: FeedbackType
   muted: boolean
 }
 
@@ -59,24 +55,24 @@ export function Feedback(props: FeedbackProps) {
   )
 }
 
-function getJingleForFeedback(feedback: FeedbackToGive): string {
-  if (feedback.auditory === 'positive') {
+function getJingleForFeedback(feedback: FeedbackType): string {
+  if (feedback === 'positive') {
     return POSITIVE_JINGLE_FILE
-  } else if (feedback.auditory === 'negative') {
+  } else if (feedback === 'negative') {
     return NEGATIVE_JINGLE_FILE
   }
   return ''
 }
 
-function getSmileyForFeedback(feedback: FeedbackToGive): string {
-  if (feedback.visual === 'positive') {
+function getSmileyForFeedback(feedback: FeedbackType): string {
+  if (feedback === 'positive') {
     return POSITIVE_SMILEY_FILE
-  } else if (feedback.visual === 'negative') {
+  } else if (feedback === 'negative') {
     return NEGATIVE_SMILEY_FILE
   }
   return ''
 }
 
-function shouldShowFeedback(feedback: FeedbackToGive): boolean {
-  return feedback.visual !== 'none' || feedback.auditory !== 'none'
+function shouldShowFeedback(feedback: FeedbackType): boolean {
+  return feedback !== 'none'
 }

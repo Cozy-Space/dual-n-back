@@ -2,6 +2,8 @@ import { CenteringContainer } from '../components/CenteringContainer'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import { InstructionPage1 } from '../components/instructions/InstructionPage1'
+
+import { InstructionPage3 } from '../components/instructions/InstructionPage3'
 import { InstructionPage2 } from '../components/instructions/InstructionPage2'
 
 export function InstructionPage() {
@@ -16,16 +18,29 @@ export function InstructionPage() {
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  return (
-    <CenteringContainer className={'flex flex-col'}>
-      {page === 0 ? (
-        <InstructionPage1 onNextClick={() => setPage(1)} />
-      ) : (
+  function renderInstructionPage() {
+    if (page === 0) {
+      return <InstructionPage1 onNextClick={() => setPage(1)} />
+    } else if (page === 1) {
+      return (
         <InstructionPage2
-          onNextClick={() => navigate(`/game?id=${experimenteeId}`)}
+          onNextClick={() => setPage(2)}
           onPreviousClick={() => setPage(0)}
         />
-      )}
+      )
+    } else {
+      return (
+        <InstructionPage3
+          onNextClick={() => navigate(`/game?id=${experimenteeId}`)}
+          onPreviousClick={() => setPage(1)}
+        />
+      )
+    }
+  }
+
+  return (
+    <CenteringContainer className={'flex flex-col'}>
+      {renderInstructionPage()}
     </CenteringContainer>
   )
 }

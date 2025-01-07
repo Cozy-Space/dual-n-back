@@ -28,28 +28,6 @@ export function InstructionPage1(props: InstructionPage1Props) {
               vorherigen Durchgang übereinstimmt. Das Gleiche gilt für das
               gesprochene Wort.
             </li>
-            <li>
-              Reagieren Sie pro Durchgang wie folgt:
-              <ul className={'list-outside list-disc pl-4 text-lg'}>
-                <li>
-                  Wenn die <b>Position</b> übereinstimmt, drücken Sie den Knopf
-                  mit dem <b>Augen-Symbol</b>.
-                </li>
-                <li>
-                  Wenn das gehörte <b>Wort</b> übereinstimmt, drücken Sie den
-                  Knopf mit dem <b>Lautsprecher-Symbol</b>.
-                </li>
-                <li>
-                  Wenn <b>beides</b>, also sowohl die Position des Bildes als
-                  auch das gehörte Geräusch, übereinstimmt, den Knopf mit{' '}
-                  <b>beiden Symbolen</b>.
-                </li>
-                <li>
-                  Wenn <b>nichts</b> übereinstimmt, drücken Sie <b>keinen</b>{' '}
-                  Knopf.
-                </li>
-              </ul>
-            </li>
           </ul>
         </div>
         <div className={'flex w-1/3 flex-1 items-center justify-center'}>

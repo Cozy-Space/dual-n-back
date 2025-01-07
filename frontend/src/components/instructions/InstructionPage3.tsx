@@ -1,44 +1,32 @@
-interface InstructionPage2Props {
+interface InstructionPage3Props {
   onNextClick: () => void
   onPreviousClick: () => void
 }
 
-export function InstructionPage2(props: InstructionPage2Props) {
+export function InstructionPage3(props: InstructionPage3Props) {
   return (
     <div className={'flex w-4/5 flex-col'}>
       <div className={'flex flex-row gap-2'}>
         {/*TextContainer*/}
         <div className={'flex w-2/3 flex-1 flex-col justify-center'}>
-          <p className={'mb-3 text-3xl'}>Anleitung:</p>
+          <p className={'mb-3 text-3xl'}>Feedback:</p>
           <ul className={'list-outside list-disc text-xl leading-loose'}>
             <li>
-              Reagieren Sie pro Durchgang wie folgt:
-              <ul className={'list-outside list-disc pl-4 text-lg'}>
-                <li>
-                  Wenn die <b>Position</b> übereinstimmt, drücken Sie den Knopf
-                  mit dem <b>Augen-Symbol</b>.
-                </li>
-                <li>
-                  Wenn das gehörte <b>Wort</b> übereinstimmt, drücken Sie den
-                  Knopf mit dem <b>Lautsprecher-Symbol</b>.
-                </li>
-                <li>
-                  Wenn <b>beides</b>, also sowohl die Position des Bildes als
-                  auch das gehörte Wort, übereinstimmt, den Knopf mit{' '}
-                  <b>beiden Symbolen</b>.
-                </li>
-                <li>
-                  Wenn <b>nichts</b> übereinstimmt, drücken Sie <b>keinen</b>{' '}
-                  Knopf.
-                </li>
-              </ul>
+              Wenn Sie <b className={'text-green-700'}>richtig</b> reagiert
+              haben, sehen Sie einen <b className={'text-green-700'}>grünen</b>{' '}
+              Smiley und hören einen einzelnen, hohen Ton.
+            </li>
+            <li>
+              Wenn Sie <b className={'text-red-700'}>falsch</b> reagiert haben,
+              sehen Sie einen <b className={'text-red-700'}>roten</b> Smiley und
+              hören zwei kurze, tiefe Töne.
             </li>
           </ul>
         </div>
         <div className={'flex w-1/3 flex-1 items-center justify-center'}>
           <img
             className={'h-full border-2 border-blue-500 object-contain'}
-            src={'images/instructions2.jpg'}
+            src={'images/instructions3.jpg'}
             alt={'Screenshot'}
           />
         </div>
@@ -58,7 +46,7 @@ export function InstructionPage2(props: InstructionPage2Props) {
           }
           onClick={props.onNextClick}
         >
-          Weiter
+          Starten
         </button>
       </div>
     </div>
