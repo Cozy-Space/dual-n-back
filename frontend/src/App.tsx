@@ -9,6 +9,7 @@ import { ResultPage } from './pages/ResultPage'
 import { ErrorPage } from './pages/ErrorPage'
 import { PlaygroundPage } from './pages/PlaygroundPage'
 import { InstructionPage } from './pages/InstructionPage'
+import { ImprintPage } from './pages/ImprintPage'
 
 const queryClient = new QueryClient()
 
@@ -25,6 +26,7 @@ function App() {
             <Route path={'/game'} element={<GamePage />} />
             <Route path={'/result'} element={<ResultPage />} />
             <Route path={'/error'} element={<ErrorPage />} />
+            <Route path={'/impressum'} element={<ImprintPage />} />
           </Routes>
         </BrowserRouter>
         <ReactQueryDevtools initialIsOpen={false} />

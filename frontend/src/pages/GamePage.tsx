@@ -74,7 +74,8 @@ export function GamePage() {
     trialCorrectness,
     enableNQuery
   )
-  const { data: statisticsData } = useStatisticsQuery(statisticsToSend)
+  const { data: statisticsData, status: statisticsStatus } =
+    useStatisticsQuery(statisticsToSend)
 
   const currentTrial = useMemo<Trial | undefined>(() => {
     if (currentTrialIndex === undefined || !blockData) return undefined
@@ -92,10 +93,14 @@ export function GamePage() {
     }
   }, [redirectToStart]) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
+    if (statisticsStatus === 'error') {
+      navigate(`/error`, { state: { errorCode: 2005 } })
+      return
+    }
     if (statisticsData) {
       navigate(`/result?id=${experimenteeId}`, { state: { statistics } })
     }
-  }, [statisticsData]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [statisticsStatus, statisticsData]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     let timeoutMs: number
