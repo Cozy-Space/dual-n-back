@@ -67,7 +67,19 @@ export function IdInputPage() {
               }
               onClick={() => navigate('/playground')}
             >
-              To playground
+              Playground
+            </button>
+            <button
+              className={
+                'w-full rounded-md bg-blue-500 py-2 text-white hover:bg-blue-600'
+              }
+              onClick={() =>
+                navigate(`/error`, {
+                  state: { errorCode: 2005, experimenteeId: 'blablablaöäöü' }
+                })
+              }
+            >
+              ErrorPage
             </button>
           </DevContainer>
         </Card>

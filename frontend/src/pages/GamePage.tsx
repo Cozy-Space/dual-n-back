@@ -94,7 +94,7 @@ export function GamePage() {
   }, [redirectToStart]) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (statisticsStatus === 'error') {
-      navigate(`/error`, { state: { errorCode: 2005 } })
+      navigate(`/error`, { state: { errorCode: 2005, experimenteeId } })
       return
     }
     if (statisticsData) {
@@ -197,7 +197,7 @@ export function GamePage() {
 
   useEffect(() => {
     if (blockStatus === 'error') {
-      navigate(`/error`, { state: { errorCode: 1804 } })
+      navigate(`/error`, { state: { errorCode: 1804, experimenteeId } })
       return
     }
     if (blockStatus !== 'success') return
@@ -207,7 +207,7 @@ export function GamePage() {
 
   useEffect(() => {
     if (nStatus === 'error') {
-      navigate(`/error`, { state: { errorCode: 1306 } })
+      navigate(`/error`, { state: { errorCode: 1306, experimenteeId } })
       return
     }
     if (nStatus !== 'success') return

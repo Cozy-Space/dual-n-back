@@ -58,10 +58,11 @@ Todo:
     - ✅ Instruktionen, Seite 1 → Screenshot mit angezeigtem Cue anzeigen
     - ✅ Sounds → geschnittene Sounds einbauen
 - ✅ Datenschutz einbauen
+- ✅ Error-Page anpassen mit Email-Adresse
 - Admin-Page bauen
     - sehen, welche participant IDs schon wie oft gespielt haben
 - Bildaufschlüsselung
-- Error-Page anpassen mit Email-Adresse
+- IdInput vorausfüllbar machen durch URL-Parameter
 - README.md
     - Beschreibung
     - Screenshots
