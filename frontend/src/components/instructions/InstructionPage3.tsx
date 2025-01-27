@@ -14,12 +14,12 @@ export function InstructionPage3(props: InstructionPage3Props) {
             <li>
               Wenn Sie <b className={'text-green-700'}>richtig</b> reagiert
               haben, sehen Sie einen <b className={'text-green-700'}>grünen</b>{' '}
-              Smiley und hören einen einzelnen, hohen Ton.
+              Smiley und hören zwei hohe Töne.
             </li>
             <li>
               Wenn Sie <b className={'text-red-700'}>falsch</b> reagiert haben,
               sehen Sie einen <b className={'text-red-700'}>roten</b> Smiley und
-              hören zwei kurze, tiefe Töne.
+              hören einen kurzen, tiefen Ton.
             </li>
           </ul>
         </div>

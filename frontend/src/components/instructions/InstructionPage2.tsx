@@ -15,8 +15,8 @@ export function InstructionPage2(props: InstructionPage2Props) {
               Reagieren Sie pro Durchgang wie folgt:
               <ul className={'list-outside list-disc pl-4 text-lg'}>
                 <li>
-                  Wenn die <b>Position</b> übereinstimmt, drücken Sie den Knopf
-                  mit dem <b>Augen-Symbol</b>.
+                  Wenn die <b>Position</b> des Bildes übereinstimmt, drücken Sie
+                  den Knopf mit dem <b>Augen-Symbol</b>.
                 </li>
                 <li>
                   Wenn das gehörte <b>Wort</b> übereinstimmt, drücken Sie den
@@ -24,8 +24,8 @@ export function InstructionPage2(props: InstructionPage2Props) {
                 </li>
                 <li>
                   Wenn <b>beides</b>, also sowohl die Position des Bildes als
-                  auch das gehörte Wort, übereinstimmt, den Knopf mit{' '}
-                  <b>beiden Symbolen</b>.
+                  auch das gehörte Wort, übereinstimmt, drücken Sie den Knopf
+                  mit <b>beiden Symbolen</b>.
                 </li>
                 <li>
                   Wenn <b>nichts</b> übereinstimmt, drücken Sie <b>keinen</b>{' '}

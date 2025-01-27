@@ -16,11 +16,12 @@ export function InstructionPage1(props: InstructionPage1Props) {
             </li>
             <li>
               Sie werden in aufeinander folgenden Durchgängen jeweils ein
-              Gesicht und ein Geräusch in Form eines gesprochenen Wortes hören.
+              Gesicht und ein Geräusch, in Form eines gesprochenen Wortes,
+              hören.
             </li>
             <li>
               Sie sollen auf die <b>Positionen</b> der Gesichter und auf die{' '}
-              <b>Wörter</b> zu achten.
+              <b>Wörter</b> achten.
             </li>
             <li>
               Ihre Aufgabe ist es, zu erkennen, ob die Position des Gesichtes
@@ -28,6 +29,7 @@ export function InstructionPage1(props: InstructionPage1Props) {
               vorherigen Durchgang übereinstimmt. Das Gleiche gilt für das
               gesprochene Wort.
             </li>
+            <li>Sie erhalten regelmäßig neue Anweisungen.</li>
           </ul>
         </div>
         <div className={'flex w-1/3 flex-1 items-center justify-center'}>

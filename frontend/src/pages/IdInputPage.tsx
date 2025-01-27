@@ -4,6 +4,7 @@ import { Card } from '../components/Card'
 import { CenteringContainer } from '../components/CenteringContainer'
 import { DevContainer } from '../components/DevContainer'
 import { Footer } from '../components/Footer'
+import { Logos } from '../components/Logos'
 
 export function IdInputPage() {
   const navigate = useNavigate()
@@ -24,7 +25,8 @@ export function IdInputPage() {
 
   return (
     <>
-      <CenteringContainer>
+      <CenteringContainer className={'flex-col gap-8'}>
+        <Logos />
         <Card>
           <form onSubmit={handleSubmit}>
             <label

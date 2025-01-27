@@ -13,7 +13,7 @@ export function Footer(props: FooterProps) {
   return (
     <BottomBar
       className={classNames(
-        'flex w-screen justify-center gap-8 pb-1 text-xs',
+        'flex w-screen justify-center gap-8 pb-1 text-xs text-blue-500',
         props.className
       )}
     >

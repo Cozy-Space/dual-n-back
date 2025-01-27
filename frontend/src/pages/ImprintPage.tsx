@@ -28,7 +28,7 @@ export function ImprintPage() {
             <p>
               Kontakt:
               <br /> Telefon: 0203 379 - 2519
-              <br /> E-Mail: lena.klein[at]uni-due.de
+              <br /> E-Mail: klein.for[at]uni-due.de
             </p>
             <p className={'text-center'}>
               <a

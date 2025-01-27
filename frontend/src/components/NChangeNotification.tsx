@@ -17,8 +17,8 @@ export function NChangeNotification(props: NChangeNotificationProps) {
     >
       <span className={'text-center text-2xl'}>
         In den folgenden Durchgängen gibt es eine Übereinstimmung, wenn die
-        Position/das Wort identisch ist, wie die Position/ das Wort{' '}
-        <b>{mapNToDurchgang(props.n)}</b> zuvor.
+        Position des Bildes/das Wort identisch ist, wie die Position des
+        Bildes/das Wort <b>{mapNToDurchgang(props.n)}</b> zuvor.
       </span>
 
       <button
@@ -36,7 +36,7 @@ export function NChangeNotification(props: NChangeNotificationProps) {
 function mapNToDurchgang(n: number) {
   switch (n) {
     case 1:
-      return 'ein Durchgang'
+      return 'einen Durchgang'
     case 2:
       return 'zwei Durchgänge'
     case 3:

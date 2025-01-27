@@ -39,24 +39,32 @@ Todo:
     - ✅ false_auditory_percent
     - ✅ false_visualauditory_percent
     - ✅ false_nopress_percent
-    - ✅ trials_completed brauchen wir doch nicht mehr, weil nur die vollständigen daten gespeichert werden. Ich speichere jetzt aber dafür amountOfPlayedBlocks
+    - ✅ trials_completed brauchen wir doch nicht mehr, weil nur die vollständigen daten gespeichert werden. Ich
+      speichere jetzt aber dafür amountOfPlayedBlocks
     - ✅ kommas für kommazahlen müssen punkte sein
     - ✅ erste zeile im file sind immer überschriften
     - ✅ dateien:
-      - ✅ eine Datei wo alle alle alle alle alle rein kommen
-      - ✅ eine Datei wo pro participant ID
-      - ✅ und für jede participant ID und jeden Tag eine Datei
-      - ✅ also gibt es jede zeile 3 mal
-- Ending-Page bauen
-    - Vielen Dank für Ihre Teilnahme an dieser Aufgabe! Sie können das Fenster jetzt schließen.
-- Impressum bauen
-- Datenschutz einbauen
-- Logos einbauen
-- Admin-Page bauen
-  - sehen, welche participant IDs schon wie oft gespielt haben
+        - ✅ eine Datei wo alle alle alle alle alle rein kommen
+        - ✅ eine Datei wo pro participant ID
+        - ✅ und für jede participant ID und jeden Tag eine Datei
+        - ✅ also gibt es jede zeile 3 mal
+- ✅ Impressum bauen
+- ✅ Ending-Page bauen
+    - ✅ Vielen Dank für Ihre Teilnahme an dieser Aufgabe! Sie können das Fenster jetzt schließen.
+- ✅ Logos einbauen
 - Tester:innen-Feedback einarbeiten
+    - ✅ Instruktionen → Typos und Textänderungen
+    - ✅ Instruktionen → "Roter Smiley, zwei tiefe Töne"
+    - ✅ Instruktionen, Seite 1 → Screenshot mit angezeigtem Cue anzeigen
+    - ✅ Sounds → geschnittene Sounds einbauen
+- ✅ Datenschutz einbauen
+- Admin-Page bauen
+    - sehen, welche participant IDs schon wie oft gespielt haben
+- Bildaufschlüsselung
+- Error-Page anpassen mit Email-Adresse
 - README.md
     - Beschreibung
+    - Screenshots
     - Installation
     - Konfiguration
     - Credits
