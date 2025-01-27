@@ -2,7 +2,7 @@ import { Dev, DevText } from 'components/Dev'
 import { useBlockQuery } from 'queries/BlockQuery'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { DayConfig, Reaction, Trial } from 'types'
+import { DayConfig, FullStatistics, Reaction, Trial } from 'types'
 import { CenteringContainer } from '../components/CenteringContainer'
 import { Matrix } from '../components/Matrix'
 import {
@@ -21,6 +21,9 @@ import { Feedback, FeedbackType } from '../components/Feedback'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import { classNames } from '../utils/classnames'
 import { calculateTrialCorrectness } from '../utils/calculateTrialCorrectness'
+import { useStatistics } from '../hooks/useStatistics'
+import { useStatisticsQuery } from '../queries/StatisticsQuery'
+import { fillUpStatistics } from '../utils/fillUpStatistics'
 
 // occurs in the order of the enum
 type GamePhase =
@@ -46,7 +49,10 @@ export function GamePage() {
   })
   const [n, setN] = useState<number>(1)
   const [currentBlockNr, setCurrentBlockNr] = useState<number>(0)
-  const [listOfN, setListOfN] = useState<number[]>([])
+  const [statistics, addNToStatistics, addTrialToStatistics] = useStatistics()
+  const [statisticsToSend, setStatisticsToSend] =
+    useState<FullStatistics | null>(null)
+
   const [userReaction, setUserReaction] = useState<ReactionType>('none')
   const [feedback, setFeedback] = useState<FeedbackType>('none')
   const {
@@ -68,6 +74,7 @@ export function GamePage() {
     trialCorrectness,
     enableNQuery
   )
+  const { data: statisticsData } = useStatisticsQuery(statisticsToSend)
 
   const currentTrial = useMemo<Trial | undefined>(() => {
     if (currentTrialIndex === undefined || !blockData) return undefined
@@ -84,6 +91,11 @@ export function GamePage() {
       navigate(`/`)
     }
   }, [redirectToStart]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (statisticsData) {
+      navigate(`/result?id=${experimenteeId}`, { state: { statistics } })
+    }
+  }, [statisticsData]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     let timeoutMs: number
@@ -93,7 +105,7 @@ export function GamePage() {
         timeoutMs = 0
         callback = () => {
           setTrialCorrectness([])
-          setListOfN((prevState) => [...prevState, n])
+          addNToStatistics(n, currentBlockNr)
           void blockRefetch()
         }
         break
@@ -134,6 +146,12 @@ export function GamePage() {
             )
             setTrialCorrectness((prevState) => [...prevState, { correct }])
             setFeedback(correct ? 'positive' : 'negative')
+            addTrialToStatistics(
+              currentBlockNr,
+              correct,
+              currentTrial.is_visual_target,
+              currentTrial.is_auditory_target
+            )
           }
           setUserReaction('none')
           setGamePhase('wait_for_feedback_is_done')
@@ -159,10 +177,9 @@ export function GamePage() {
         timeoutMs = 100
         callback = () => {
           if (currentBlockNr === config.amount_of_blocks_to_play) {
-            console.log('Game finished!')
-            const avgN = listOfN.reduce((a, b) => a + b) / listOfN.length
-            // Todo: send statistics to backend
-            navigate(`/result?id=${experimenteeId}`, { state: { avgN } })
+            setStatisticsToSend(
+              fillUpStatistics(statistics, experimenteeId || '')
+            )
           } else {
             setEnableNQuery(true)
             // nQuery will trigger the next block automatically

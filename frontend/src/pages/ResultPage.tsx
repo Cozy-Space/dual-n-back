@@ -7,11 +7,11 @@ export function ResultPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const location = useLocation()
-  const avgN = location.state?.avgN
+  const statistics = location.state?.statistics
   const experimenteeId = searchParams.get('id')
 
   useEffect(() => {
-    if (!experimenteeId || !avgN) {
+    if (!experimenteeId || !statistics) {
       navigate(`/`)
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -21,7 +21,7 @@ export function ResultPage() {
       <Card>
         <span>experimenteeId: {experimenteeId}</span>
         <br />
-        <span>AvgN: {avgN}</span>
+        <span>statistics: {JSON.stringify(statistics)}</span>
       </Card>
     </CenteringContainer>
   )

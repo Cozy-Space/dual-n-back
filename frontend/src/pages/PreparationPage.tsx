@@ -8,7 +8,6 @@ import { PencilIcon } from '@heroicons/react/20/solid'
 import { useConfigQuery } from '../queries/ConfigQuery'
 import { DevContainer } from '../components/DevContainer'
 import { audioCues, imageCues, preloadCues } from '../utils/preloadCues'
-import { useUserIdQuery } from '../queries/UserIdQuery'
 
 export function PreparationPage() {
   const navigate = useNavigate()
@@ -16,7 +15,6 @@ export function PreparationPage() {
   const experimenteeId = searchParams.get('id')
   const [playedTestAudio, setPlayedTestAudio] = useState(false)
   const [preloadedCues, setPreloadedCues] = useState(false)
-  const { data: userIdFileName } = useUserIdQuery(experimenteeId)
   const { data: configData, status: configStatus } = useConfigQuery()
 
   useEffect(() => {
@@ -94,10 +92,12 @@ export function PreparationPage() {
               'w-full rounded-md bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600'
             }
             onClick={() => {
-              navigate(`/result?id=${experimenteeId}`, { state: { avgN: 4 } })
+              navigate(`/result?id=${experimenteeId}`, {
+                state: { statistics: 'delete this statistics thing lol' }
+              })
             }}
           >
-            Game ended with avg N of 4...
+            Go to very end
           </button>
         </DevContainer>
       </Card>
