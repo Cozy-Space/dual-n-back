@@ -9,29 +9,25 @@ export function InstructionPage2(props: InstructionPage2Props) {
       <div className={'flex flex-row gap-2'}>
         {/*TextContainer*/}
         <div className={'flex w-2/3 flex-1 flex-col justify-center'}>
-          <p className={'mb-3 text-3xl'}>Anleitung:</p>
+          <p className={'mb-3 text-3xl'}>
+            Reagieren Sie pro Durchgang wie folgt:
+          </p>
           <ul className={'list-outside list-disc text-xl leading-loose'}>
             <li>
-              Reagieren Sie pro Durchgang wie folgt:
-              <ul className={'list-outside list-disc pl-4 text-lg'}>
-                <li>
-                  Wenn die <b>Position</b> des Bildes übereinstimmt, drücken Sie
-                  den Knopf mit dem <b>Augen-Symbol</b>.
-                </li>
-                <li>
-                  Wenn das gehörte <b>Wort</b> übereinstimmt, drücken Sie den
-                  Knopf mit dem <b>Lautsprecher-Symbol</b>.
-                </li>
-                <li>
-                  Wenn <b>beides</b>, also sowohl die Position des Bildes als
-                  auch das gehörte Wort, übereinstimmt, drücken Sie den Knopf
-                  mit <b>beiden Symbolen</b>.
-                </li>
-                <li>
-                  Wenn <b>nichts</b> übereinstimmt, drücken Sie <b>keinen</b>{' '}
-                  Knopf.
-                </li>
-              </ul>
+              Wenn die <b>Position</b> des Bildes übereinstimmt, drücken Sie den
+              Knopf mit dem <b>Augen-Symbol</b>.
+            </li>
+            <li>
+              Wenn das gehörte <b>Wort</b> übereinstimmt, drücken Sie den Knopf
+              mit dem <b>Lautsprecher-Symbol</b>.
+            </li>
+            <li>
+              Wenn <b>beides</b>, also sowohl die Position des Bildes als auch
+              das gehörte Wort, übereinstimmt, drücken Sie den Knopf mit{' '}
+              <b>beiden Symbolen</b>.
+            </li>
+            <li>
+              Wenn <b>nichts</b> übereinstimmt, drücken Sie <b>keinen</b> Knopf.
             </li>
           </ul>
         </div>
