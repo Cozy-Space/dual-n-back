@@ -59,6 +59,7 @@ Todo:
     - ✅ Sounds → geschnittene Sounds einbauen
 - ✅ Datenschutz einbauen
 - ✅ Error-Page anpassen mit Email-Adresse
+- 'test' ist keine gültige id ändern xD
 - Admin-Page bauen
     - sehen, welche participant IDs schon wie oft gespielt haben
 - Bildaufschlüsselung

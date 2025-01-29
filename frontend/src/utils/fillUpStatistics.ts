@@ -1,12 +1,13 @@
 import { FullStatistics, Statistics } from 'types/src/statistics.model'
+import { DateTime } from 'ts-luxon'
 
 export function fillUpStatistics(
   statistics: Statistics,
   experimenteeId: string
 ): FullStatistics {
   // amountOfCharsInId * amountOfUniqueCharsInId + everyVisualsFalseCnt * everyOverallCorrectCnt + dateInMs
-  const now = new Date()
-  const dateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const now = DateTime.now().setZone('utc')
+  const dateOnly = new Date(now.year, now.month, now.day)
   const timeInMs = dateOnly.getTime()
 
   const securityToken =

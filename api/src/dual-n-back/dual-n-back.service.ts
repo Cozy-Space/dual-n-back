@@ -25,6 +25,9 @@ export class DualNBackService {
 
     this.addRandomVisionImages(trials);
 
+    this.logger.log(
+      `Created ${n}n-block with ${trials.length} trials: ${JSON.stringify(trials.map(this.mapTrialToHitTypeForLoggingPurposes))}`,
+    );
     return {
       n,
       trials,
@@ -157,5 +160,18 @@ export class DualNBackService {
       hitArray.splice(0, 0, 'none');
     }
     return hitArray;
+  }
+
+  mapTrialToHitTypeForLoggingPurposes(trial: Trial): HitType {
+    if (trial.is_auditory_target && trial.is_visual_target) {
+      return 'auditory_visual';
+    }
+    if (trial.is_auditory_target) {
+      return 'auditory';
+    }
+    if (trial.is_visual_target) {
+      return 'visual';
+    }
+    return 'none';
   }
 }
