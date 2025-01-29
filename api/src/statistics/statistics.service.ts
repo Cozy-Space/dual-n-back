@@ -1,7 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { FullStatistics } from 'types/src/statistics.model';
 import { OutputService } from '../output/output.service';
-import { DateTime } from 'ts-luxon';
 
 @Injectable()
 export class StatisticsService {
@@ -155,9 +154,6 @@ export class StatisticsService {
   }
 
   private calculateSecurityToken(statistics: FullStatistics) {
-    const now = DateTime.now().setZone('utc');
-    const dateOnly = new Date(now.year, now.month, now.day);
-    const timeInMs = dateOnly.getTime();
     return (
       statistics.experimenteeId.length *
         new Set(statistics.experimenteeId).size +
@@ -168,8 +164,7 @@ export class StatisticsService {
         statistics.statistics.blockStatistics.reduce(
           (acc, block) => acc + block.overallCorrectCnt,
           0,
-        ) +
-      timeInMs
+        )
     );
   }
 }
