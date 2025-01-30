@@ -16,12 +16,12 @@ export function Logos(props: LogosProps) {
       <img
         className={'h-20 object-scale-down'}
         src={'images/allgpsyLogo.png'}
-        alt={'Screenshot'}
+        alt={''}
       />
       <img
         className={'h-20 object-scale-down'}
         src={'images/udeLogo.png'}
-        alt={'Screenshot'}
+        alt={''}
       />
     </div>
   )

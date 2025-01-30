@@ -42,7 +42,7 @@ export function Feedback(props: FeedbackProps) {
         <img
           className={'max-w-lg'}
           src={getSmileyForFeedback(props.feedback)}
-          alt="visually feedback"
+          alt={''}
         />
       )}
       {!props.muted && getJingleForFeedback(props.feedback) !== '' && (

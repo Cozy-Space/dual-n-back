@@ -27,7 +27,7 @@ export function InstructionPage3(props: InstructionPage3Props) {
           <img
             className={'h-full border-2 border-blue-500 object-contain'}
             src={'images/instructions3.jpg'}
-            alt={'Screenshot'}
+            alt={''}
           />
         </div>
       </div>

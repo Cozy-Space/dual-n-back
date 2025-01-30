@@ -36,7 +36,7 @@ export function InstructionPage1(props: InstructionPage1Props) {
           <img
             className={'h-full border-2 border-blue-500 object-contain'}
             src={'images/instructions1.jpg'}
-            alt={'Screenshot'}
+            alt={''}
           />
         </div>
       </div>

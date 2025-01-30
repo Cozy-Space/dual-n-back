@@ -9,7 +9,7 @@ export function QueueImage(props: QueueImageProps) {
       <img
         className={props.className}
         src={idToAsset(props.imageId)}
-        alt={'Queue Image'}
+        alt={''}
       />
     )
   )
