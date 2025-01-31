@@ -24,6 +24,7 @@ import { calculateTrialCorrectness } from '../utils/calculateTrialCorrectness'
 import { useStatistics } from '../hooks/useStatistics'
 import { useStatisticsQuery } from '../queries/StatisticsQuery'
 import { fillUpStatistics } from '../utils/fillUpStatistics'
+import { ReactionButton } from '../components/ReactionButton'
 
 // occurs in the order of the enum
 type GamePhase =
@@ -292,36 +293,33 @@ export function GamePage() {
                 : 'opacity-100'
             )}
           >
-            <button
-              className={
-                'flex cursor-pointer flex-row rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
-              }
+            <ReactionButton
+              userReaction={userReaction}
+              targetReaction={'visual'}
               onClick={() => setUserReaction('visual')}
             >
               <PlusIcon className={'invisible size-10 text-white'} />
               <EyeIcon className={'size-10 text-white'} />
               <SpeakerWaveIcon className={'invisible size-10 text-white'} />
-            </button>
-            <button
-              className={
-                'flex cursor-pointer flex-row rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
-              }
+            </ReactionButton>
+            <ReactionButton
+              userReaction={userReaction}
+              targetReaction={'auditory'}
               onClick={() => setUserReaction('auditory')}
             >
               <EyeIcon className={'invisible size-10 text-white'} />
               <SpeakerWaveIcon className={'size-10 text-white'} />
               <PlusIcon className={'invisible size-10 text-white'} />
-            </button>
-            <button
-              className={
-                'flex cursor-pointer flex-row rounded-md bg-blue-500 px-16 py-4 text-white hover:bg-blue-600'
-              }
+            </ReactionButton>
+            <ReactionButton
+              userReaction={userReaction}
+              targetReaction={'auditory_visual'}
               onClick={() => setUserReaction('auditory_visual')}
             >
               <EyeIcon className={'size-10 text-white'} />
               <PlusIcon className={'size-10 text-white'} />
               <SpeakerWaveIcon className={'size-10 text-white'} />
-            </button>
+            </ReactionButton>
           </div>
         </div>
         <DevContainer
