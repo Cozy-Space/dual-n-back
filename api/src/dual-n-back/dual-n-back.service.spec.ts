@@ -57,16 +57,16 @@ describe('DualNBackService', () => {
       const block = service.createBlock(n);
 
       const auditoryTargets = block.trials.filter(
-        (trial) => !trial.is_visual_target && trial.is_auditory_target,
+        (trial) => trial.trialType === 'auditory',
       );
       const visualTargets = block.trials.filter(
-        (trial) => trial.is_visual_target && !trial.is_auditory_target,
+        (trial) => trial.trialType === 'visual',
       );
       const auditoryVisualTargets = block.trials.filter(
-        (trial) => trial.is_visual_target && trial.is_auditory_target,
+        (trial) => trial.trialType === 'auditory_visual',
       );
       const nonTargets = block.trials.filter(
-        (trial) => !trial.is_visual_target && !trial.is_auditory_target,
+        (trial) => trial.trialType === 'none',
       );
 
       expect(auditoryTargets.length).toBe(config.amount_of_auditory_targets);
@@ -87,7 +87,7 @@ describe('DualNBackService', () => {
       const block = service.createBlock(n);
 
       const firstVisualCorrectTrialIndex = block.trials.findIndex(
-        (trial) => trial.is_visual_target || trial.is_auditory_target,
+        (trial) => trial.trialType !== 'none',
       );
 
       expect(firstVisualCorrectTrialIndex).toBeGreaterThanOrEqual(n);
@@ -97,13 +97,15 @@ describe('DualNBackService', () => {
       const block = service.createBlock(n);
 
       for (const [i, trial] of block.trials.entries()) {
-        if (trial.is_visual_target) {
-          expect(trial.vision_position).toBe(
-            block.trials[i - n].vision_position,
-          );
+        if (trial.trialType === 'visual') {
+          expect(trial.visionPosition).toBe(block.trials[i - n].visionPosition);
         }
-        if (trial.is_auditory_target) {
-          expect(trial.sound_file).toBe(block.trials[i - n].sound_file);
+        if (trial.trialType === 'auditory') {
+          expect(trial.soundFileId).toBe(block.trials[i - n].soundFileId);
+        }
+        if (trial.trialType === 'auditory_visual') {
+          expect(trial.visionPosition).toBe(block.trials[i - n].visionPosition);
+          expect(trial.soundFileId).toBe(block.trials[i - n].soundFileId);
         }
       }
     });
@@ -116,13 +118,11 @@ describe('DualNBackService', () => {
           continue;
         }
 
-        if (!trial.is_visual_target) {
-          expect(trial.vision_position).not.toBe(
-            block.trials[i - n].vision_position,
+        if (trial.trialType === 'none') {
+          expect(trial.visionPosition).not.toBe(
+            block.trials[i - n].visionPosition,
           );
-        }
-        if (!trial.is_auditory_target) {
-          expect(trial.sound_file).not.toBe(block.trials[i - n].sound_file);
+          expect(trial.soundFileId).not.toBe(block.trials[i - n].soundFileId);
         }
       }
     });
@@ -130,7 +130,7 @@ describe('DualNBackService', () => {
     it('should return a block, where every visual image is not repeating itself => images are shuffled', () => {
       const block = service.createBlock(n);
 
-      const visualImages = block.trials.map((trial) => trial.image_file);
+      const visualImages = block.trials.map((trial) => trial.imageFile);
 
       for (let i = 0; i < visualImages.length; i++) {
         expect(visualImages[i]).not.toBe(visualImages[i + 1]);

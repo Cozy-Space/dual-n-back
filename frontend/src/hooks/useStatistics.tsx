@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BlockStatistics, Statistics } from 'types'
+import { BlockStatistics, Statistics, TrialType } from 'types'
 
 export function useStatistics() {
   const [statistics, setStatistics] = useState<Statistics>({
@@ -39,8 +39,7 @@ export function useStatistics() {
   const addTrial = (
     blockNr: number,
     isCorrect: boolean,
-    isVisual: boolean,
-    isAuditory: boolean
+    trialType: TrialType
   ): void => {
     setStatistics((prev) => {
       const blockStatistics = prev.blockStatistics
@@ -51,21 +50,21 @@ export function useStatistics() {
       } else {
         block.overallFalseCnt += 1
       }
-      if (isVisual && isAuditory) {
+      if (trialType === 'auditory_visual') {
         block.visualsAndAuditoryTrailCnt += 1
         if (isCorrect) {
           block.visualsAndAuditoryCorrectCnt += 1
         } else {
           block.visualsAndAuditoryFalseCnt += 1
         }
-      } else if (isVisual) {
+      } else if (trialType === 'visual') {
         block.visualsTrailCnt += 1
         if (isCorrect) {
           block.visualsCorrectCnt += 1
         } else {
           block.visualsFalseCnt += 1
         }
-      } else if (isAuditory) {
+      } else if (trialType === 'auditory') {
         block.auditoryTrailCnt += 1
         if (isCorrect) {
           block.auditoryCorrectCnt += 1

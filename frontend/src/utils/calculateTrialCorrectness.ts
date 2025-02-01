@@ -1,17 +1,8 @@
-import { ReactionType } from '../pages/GamePage'
-import { Trial } from 'types'
+import { Trial, TrialType } from 'types'
 
 export function calculateTrialCorrectness(
-  userReaction: ReactionType,
+  userReaction: TrialType,
   currentTrial: Trial
 ): boolean {
-  if (currentTrial.is_auditory_target && currentTrial.is_visual_target) {
-    return userReaction === 'auditory_visual'
-  } else if (currentTrial.is_auditory_target) {
-    return userReaction === 'auditory'
-  } else if (currentTrial.is_visual_target) {
-    return userReaction === 'visual'
-  } else {
-    return userReaction === 'none'
-  }
+  return userReaction === currentTrial.trialType
 }

@@ -1,11 +1,14 @@
 export type Trial = {
-  sound_file: number;
-  is_auditory_target: boolean;
+  soundFileId: number;
+  visionPosition: number;
+  trialType: TrialType;
 
-  vision_position: number;
-  is_visual_target: boolean;
-  image_file: number;
+  imageFile: number;
 
-  ms_vision_time: number;
-  ms_reaction_time: number;
+  visionTimeMs: number;
+  reactionTimeMs: number;
 };
+
+
+export type TrialType = 'none' | 'auditory' | 'visual' | 'auditory_visual'
+

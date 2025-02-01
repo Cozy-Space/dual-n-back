@@ -1,8 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '../config/config.service';
-import { Block, Trial } from 'types';
-
-type HitType = 'auditory' | 'visual' | 'auditory_visual' /* = both */ | 'none';
+import { Block, Trial, TrialType } from 'types';
 
 @Injectable()
 export class DualNBackService {
@@ -14,7 +12,7 @@ export class DualNBackService {
     this.logger.log(`Using config: ${JSON.stringify(config)}`);
 
     const trials: Trial[] = this.createTrials(n);
-    const hitArray: HitType[] = this.createHitArray(
+    const hitArray: TrialType[] = this.createHitArray(
       config.base_amount_of_trials,
       n,
       config.amount_of_auditory_targets,
@@ -26,7 +24,7 @@ export class DualNBackService {
     this.addRandomVisionImages(trials);
 
     this.logger.log(
-      `Created ${n}n-block with ${trials.length} trials: ${JSON.stringify(trials.map(this.mapTrialToHitTypeForLoggingPurposes))}`,
+      `Created ${n}n-block with ${trials.length} trials: ${JSON.stringify(trials.map((trial) => trial.trialType))}`,
     );
     return {
       n,
@@ -34,7 +32,11 @@ export class DualNBackService {
     };
   }
 
-  private hitifyTrials(trials: Trial[], hitArray: HitType[], n: number): void {
+  private hitifyTrials(
+    trials: Trial[],
+    hitArray: TrialType[],
+    n: number,
+  ): void {
     if (trials.length !== hitArray.length) {
       throw new Error(
         `trials(${trials.length}) and hitArray(${hitArray.length}) must have the same length`,
@@ -42,11 +44,11 @@ export class DualNBackService {
     }
     for (let i = 0; i < trials.length; i++) {
       if (i < n) {
-        trials[i].vision_position = this.getExcludedRandomNumber(
+        trials[i].visionPosition = this.getExcludedRandomNumber(
           undefined,
           this.configService.getGameConfig().amount_of_positions,
         );
-        trials[i].sound_file = this.getExcludedRandomNumber(
+        trials[i].soundFileId = this.getExcludedRandomNumber(
           undefined,
           this.configService.getGameConfig().amount_of_sounds,
         );
@@ -55,34 +57,31 @@ export class DualNBackService {
       }
       const hitType = hitArray[i];
       if (hitType === 'visual') {
-        trials[i].vision_position = trials[i - n].vision_position;
-        trials[i].sound_file = this.getExcludedRandomNumber(
-          trials[i - n].sound_file,
+        trials[i].visionPosition = trials[i - n].visionPosition;
+        trials[i].soundFileId = this.getExcludedRandomNumber(
+          trials[i - n].soundFileId,
           this.configService.getGameConfig().amount_of_sounds,
         );
       } else if (hitType === 'auditory') {
-        trials[i].vision_position = this.getExcludedRandomNumber(
-          trials[i - n].vision_position,
+        trials[i].visionPosition = this.getExcludedRandomNumber(
+          trials[i - n].visionPosition,
           this.configService.getGameConfig().amount_of_positions,
         );
-        trials[i].sound_file = trials[i - n].sound_file;
+        trials[i].soundFileId = trials[i - n].soundFileId;
       } else if (hitType === 'auditory_visual') {
-        trials[i].vision_position = trials[i - n].vision_position;
-        trials[i].sound_file = trials[i - n].sound_file;
+        trials[i].visionPosition = trials[i - n].visionPosition;
+        trials[i].soundFileId = trials[i - n].soundFileId;
       } else {
-        trials[i].vision_position = this.getExcludedRandomNumber(
-          trials[i - n].vision_position,
+        trials[i].visionPosition = this.getExcludedRandomNumber(
+          trials[i - n].visionPosition,
           this.configService.getGameConfig().amount_of_positions,
         );
-        trials[i].sound_file = this.getExcludedRandomNumber(
-          trials[i - n].sound_file,
+        trials[i].soundFileId = this.getExcludedRandomNumber(
+          trials[i - n].soundFileId,
           this.configService.getGameConfig().amount_of_sounds,
         );
       }
-      trials[i].is_visual_target =
-        hitType === 'visual' || hitType === 'auditory_visual';
-      trials[i].is_auditory_target =
-        hitType === 'auditory' || hitType === 'auditory_visual';
+      trials[i].trialType = hitType;
     }
   }
 
@@ -102,13 +101,12 @@ export class DualNBackService {
 
   private createBaseTrial(): Trial {
     return {
-      sound_file: 0,
-      is_auditory_target: false,
-      vision_position: -1,
-      image_file: 0,
-      is_visual_target: false,
-      ms_vision_time: this.configService.getGameConfig().ms_vision_time,
-      ms_reaction_time: this.configService.getGameConfig().ms_reaction_time,
+      soundFileId: 0,
+      trialType: 'none',
+      visionPosition: -1,
+      imageFile: 0,
+      visionTimeMs: this.configService.getGameConfig().ms_vision_time,
+      reactionTimeMs: this.configService.getGameConfig().ms_reaction_time,
     };
   }
 
@@ -120,7 +118,7 @@ export class DualNBackService {
     images.sort(() => Math.random() - 0.5);
 
     for (let i = 0; i < trials.length; i++) {
-      trials[i].image_file =
+      trials[i].imageFile =
         images[i % this.configService.getGameConfig().amount_of_images];
     }
   }
@@ -139,8 +137,8 @@ export class DualNBackService {
     auditoryHits: number,
     visualHits: number,
     auditoryVisualHits: number,
-  ): HitType[] {
-    const hitArray: HitType[] = Array.from(
+  ): TrialType[] {
+    const hitArray: TrialType[] = Array.from(
       { length: baseAmountOfTrials },
       () => 'none',
     ); // none of the trials are hits
@@ -160,18 +158,5 @@ export class DualNBackService {
       hitArray.splice(0, 0, 'none');
     }
     return hitArray;
-  }
-
-  mapTrialToHitTypeForLoggingPurposes(trial: Trial): HitType {
-    if (trial.is_auditory_target && trial.is_visual_target) {
-      return 'auditory_visual';
-    }
-    if (trial.is_auditory_target) {
-      return 'auditory';
-    }
-    if (trial.is_visual_target) {
-      return 'visual';
-    }
-    return 'none';
   }
 }

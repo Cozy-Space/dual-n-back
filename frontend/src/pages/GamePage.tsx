@@ -2,7 +2,7 @@ import { Dev, DevText } from 'components/Dev'
 import { useBlockQuery } from 'queries/BlockQuery'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { DayConfig, FullStatistics, Reaction, Trial } from 'types'
+import { DayConfig, FullStatistics, Reaction, TrialType, Trial } from 'types'
 import { CenteringContainer } from '../components/CenteringContainer'
 import { Matrix } from '../components/Matrix'
 import {
@@ -37,8 +37,6 @@ type GamePhase =
   | 'wait_for_feedback_is_done'
   | 'block_finished'
 
-export type ReactionType = 'none' | 'auditory' | 'visual' | 'auditory_visual'
-
 export function GamePage() {
   const navigate = useNavigate()
   const [muted, setMuted] = useState(false) //debug purposes
@@ -54,7 +52,7 @@ export function GamePage() {
   const [statisticsToSend, setStatisticsToSend] =
     useState<FullStatistics | null>(null)
 
-  const [userReaction, setUserReaction] = useState<ReactionType>('none')
+  const [userReaction, setUserReaction] = useState<TrialType>('none')
   const [feedback, setFeedback] = useState<FeedbackType>('none')
   const {
     data: blockData,
@@ -67,12 +65,12 @@ export function GamePage() {
   >(undefined)
 
   const [gamePhase, setGamePhase] = useState<GamePhase>('loading')
-  const [trialCorrectness, setTrialCorrectness] = useState<Reaction[]>([])
+  const [trialReactions, setTrialReactions] = useState<Reaction[]>([])
 
   const [enableNQuery, setEnableNQuery] = useState(false)
   const { data: nData, status: nStatus } = useNQuery(
     n,
-    trialCorrectness,
+    trialReactions,
     enableNQuery
   )
   const { data: statisticsData, status: statisticsStatus } =
@@ -110,7 +108,7 @@ export function GamePage() {
       case 'loading':
         timeoutMs = 0
         callback = () => {
-          setTrialCorrectness([])
+          setTrialReactions([])
           addNToStatistics(n, currentBlockNr)
           void blockRefetch()
         }
@@ -130,13 +128,13 @@ export function GamePage() {
         }
         break
       case 'queue':
-        timeoutMs = currentTrial?.ms_vision_time || 0
+        timeoutMs = currentTrial?.visionTimeMs || 0
         callback = () => {
           setGamePhase('user_can_react')
         }
         break
       case 'user_can_react':
-        timeoutMs = currentTrial?.ms_reaction_time || 0
+        timeoutMs = currentTrial?.reactionTimeMs || 0
         callback = () => {
           setGamePhase('feedback')
         }
@@ -150,13 +148,12 @@ export function GamePage() {
               userReaction,
               currentTrial
             )
-            setTrialCorrectness((prevState) => [...prevState, { correct }])
+            setTrialReactions((prevState) => [...prevState, { correct }])
             setFeedback(correct ? 'positive' : 'negative')
             addTrialToStatistics(
               currentBlockNr,
               correct,
-              currentTrial.is_visual_target,
-              currentTrial.is_auditory_target
+              currentTrial.trialType
             )
           }
           setUserReaction('none')
@@ -232,22 +229,27 @@ export function GamePage() {
                 n,
                 currentTrialIndex: String(currentTrialIndex),
                 gamePhase,
+                amountOfBlocks: config.amount_of_blocks_to_play,
                 blockLength: blockData?.trials.length,
-                visionPosition: currentTrial?.vision_position,
-                imageContent: (currentTrial?.image_file ?? -100) + 1,
-                shouldClickVision: currentTrial?.is_visual_target ? (
-                  <DevText truthy={true} />
-                ) : (
-                  <DevText truthy={false} />
+                visionPosition: currentTrial?.visionPosition,
+                imageContent: (currentTrial?.imageFile ?? -100) + 1,
+                shouldClickVision: (
+                  <DevText
+                    truthy={['visual', 'auditory_visual'].includes(
+                      currentTrial?.trialType || 'none'
+                    )}
+                  />
                 ),
-                shouldClickSound: currentTrial?.is_auditory_target ? (
-                  <DevText truthy={true} />
-                ) : (
-                  <DevText truthy={false} />
+                shouldClickSound: (
+                  <DevText
+                    truthy={['auditory', 'auditory_visual'].includes(
+                      currentTrial?.trialType || 'none'
+                    )}
+                  />
                 ),
                 userReaction,
                 feedback: feedback,
-                trialCorrectness: trialCorrectness.map((r) =>
+                trialCorrectness: trialReactions.map((r) =>
                   r.correct ? '✅' : '❌'
                 ),
                 blockQStatus: blockStatus,
@@ -269,11 +271,11 @@ export function GamePage() {
               <Matrix
                 activeId={
                   gamePhase === 'queue'
-                    ? currentTrial?.vision_position
+                    ? currentTrial?.visionPosition
                     : undefined
                 }
                 imageId={
-                  gamePhase === 'queue' ? currentTrial?.image_file : undefined
+                  gamePhase === 'queue' ? currentTrial?.imageFile : undefined
                 }
               />
             }
@@ -281,7 +283,7 @@ export function GamePage() {
           />
           <Sound
             soundId={
-              gamePhase === 'queue' ? currentTrial?.sound_file : undefined
+              gamePhase === 'queue' ? currentTrial?.soundFileId : undefined
             }
             muted={muted}
           />
