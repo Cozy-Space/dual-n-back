@@ -84,7 +84,7 @@ export function IdInputPage() {
           </DevContainer>
         </Card>
       </CenteringContainer>
-      <Footer />
+      <Footer version={'v0.9.93-alpha'} />
     </>
   )
 }

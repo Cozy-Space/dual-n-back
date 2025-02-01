@@ -5,6 +5,7 @@ import { classNames } from '../utils/classnames'
 
 interface FooterProps {
   className?: string | undefined
+  version?: string
 }
 
 export function Footer(props: FooterProps) {
@@ -23,6 +24,9 @@ export function Footer(props: FooterProps) {
       <p className={'cursor-pointer'} onClick={() => navigate('/datenschutz')}>
         Datenschutz
       </p>
+      {props.version && (
+        <p className={'absolute right-2 text-gray-400'}>{props.version}</p>
+      )}
     </BottomBar>
   )
 }

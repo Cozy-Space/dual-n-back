@@ -59,6 +59,9 @@ Todo:
     - ✅ Sounds → geschnittene Sounds einbauen
 - ✅ Datenschutz einbauen
 - ✅ Error-Page anpassen mit Email-Adresse
+- ✅ none-none Reactions ignorieren
+- ✅Versionsnummer auf Startseite anzeigen
+- Versionsnummer zu 1.0.0 ändern
 - 'test' ist keine gültige id ändern xD
 - Admin-Page bauen
     - sehen, welche participant IDs schon wie oft gespielt haben
