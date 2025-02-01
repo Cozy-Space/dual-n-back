@@ -1,11 +1,11 @@
 import { classNames } from '../utils/classnames'
 import React from 'react'
-import { ReactionType } from '../pages/GamePage'
+import { TrialType } from 'types'
 
 interface ReactionButtonProps {
   children?: React.ReactNode
-  userReaction: ReactionType
-  targetReaction: ReactionType
+  userReaction: TrialType
+  targetReaction: TrialType
   onClick: () => void
   className?: string | undefined
 }
