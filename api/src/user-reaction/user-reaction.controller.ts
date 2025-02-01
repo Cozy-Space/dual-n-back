@@ -15,11 +15,11 @@ export class UserReactionController {
   private readonly logger = new Logger(UserReactionController.name);
   @Inject() userReactionService: UserReactionService;
 
-  // curl -X POST "localhost:3000/api/user_reaction.post?n=2" -H "Content-Type: application/json" --data '{"reactions":[{"correct": false}, {"correct": false}, {"correct": false}, {"correct": false}, {"correct": false}]}'
+  // OUTDATED: curl -X POST "localhost:3000/api/user_reaction.post?n=2" -H "Content-Type: application/json" --data '{"reactions":[{"correct": false}, {"correct": false}, {"correct": false}, {"correct": false}, {"correct": false}]}'
   // -> 1
-  // curl -X POST "localhost:3000/api/user_reaction.post?n=2" -H "Content-Type: application/json" --data '{"reactions":[{"correct": true}, {"correct": false}, {"correct": true}, {"correct": false}, {"correct": true}]}'
+  // OUTDATED: curl -X POST "localhost:3000/api/user_reaction.post?n=2" -H "Content-Type: application/json" --data '{"reactions":[{"correct": true}, {"correct": false}, {"correct": true}, {"correct": false}, {"correct": true}]}'
   // -> 2
-  // curl -X POST "localhost:3000/api/user_reaction.post?n=2" -H "Content-Type: application/json" --data '{"reactions":[{"correct": true}, {"correct": false}, {"correct": true}, {"correct": true}, {"correct": true}]}'
+  // OUTDATED: curl -X POST "localhost:3000/api/user_reaction.post?n=2" -H "Content-Type: application/json" --data '{"reactions":[{"correct": true}, {"correct": false}, {"correct": true}, {"correct": true}, {"correct": true}]}'
   // -> 3
   @Post('user_reaction.post')
   getNewN(@Query('n') n: number, @Body('reactions') reactions: Reaction[]) {
@@ -28,7 +28,12 @@ export class UserReactionController {
       n === 0 ||
       reactions === undefined ||
       reactions.length === 0 ||
-      reactions.find((reaction) => reaction.correct === undefined) !== undefined
+      reactions.find((reaction) => reaction.correct === undefined) !==
+        undefined ||
+      reactions.find((reaction) => reaction.reactionType === undefined) !==
+        undefined ||
+      reactions.find((reaction) => reaction.trialType === undefined) !==
+        undefined
     ) {
       throw new BadRequestException('n and reactions are required');
     }

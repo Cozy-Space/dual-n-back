@@ -2,7 +2,7 @@ import { Dev, DevText } from 'components/Dev'
 import { useBlockQuery } from 'queries/BlockQuery'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { DayConfig, FullStatistics, Reaction, TrialType, Trial } from 'types'
+import { DayConfig, FullStatistics, Reaction, Trial, TrialType } from 'types'
 import { CenteringContainer } from '../components/CenteringContainer'
 import { Matrix } from '../components/Matrix'
 import {
@@ -148,7 +148,14 @@ export function GamePage() {
               userReaction,
               currentTrial
             )
-            setTrialReactions((prevState) => [...prevState, { correct }])
+            setTrialReactions((prevState) => [
+              ...prevState,
+              {
+                correct,
+                trialType: currentTrial.trialType,
+                reactionType: userReaction
+              }
+            ])
             setFeedback(correct ? 'positive' : 'negative')
             addTrialToStatistics(
               currentBlockNr,

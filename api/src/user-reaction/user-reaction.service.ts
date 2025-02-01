@@ -8,16 +8,37 @@ export class UserReactionService {
 
   public getNFromReaction(usedN: number, reactions: Reaction[]): number {
     let newN = usedN;
+    // upgrade when hitting x consecutive correct reactions, without using (trialType: none => reactionType: none) reactions
     const shouldUpgrade = this.hasConsecutiveElements(
-      reactions.slice(usedN), // don't use the first n reactions for upgrading
+      reactions
+        .slice(usedN) // don't use the first n reactions for upgrading
+        .filter(
+          (reaction) =>
+            !(
+              reaction.trialType === 'none' && reaction.reactionType === 'none'
+            ), // filter out (trialType: none => reactionType: none) reactions
+        ),
       this.configService.getGameConfig().consecutive_right_hits_for_upgrade,
       (reaction) => reaction.correct,
     );
     if (shouldUpgrade) {
       newN++;
     }
+
+    console.log(
+      reactions.filter(
+        (reaction) =>
+          !(reaction.trialType === 'none' && reaction.reactionType === 'none'), // filter out (trialType: none => reactionType: none) reactions
+      ),
+    );
     const shouldDowngrade = this.hasConsecutiveElements(
-      reactions, // use the first n reactions for downgrading
+      reactions // use the first n reactions for downgrading
+        .filter(
+          (reaction) =>
+            !(
+              reaction.trialType === 'none' && reaction.reactionType === 'none'
+            ), // filter out (trialType: none => reactionType: none) reactions
+        ),
       this.configService.getGameConfig().consecutive_wrong_hits_for_downgrade,
       (reaction) => !reaction.correct,
     );
