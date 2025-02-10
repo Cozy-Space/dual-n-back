@@ -89,6 +89,14 @@ export function IdInputPage() {
             >
               ErrorPage
             </button>
+            <button
+              className={
+                'w-full rounded-md bg-blue-500 py-2 text-white hover:bg-blue-600'
+              }
+              onClick={() => navigate(`/admin`)}
+            >
+              AdminPage
+            </button>
           </DevContainer>
         </Card>
       </CenteringContainer>

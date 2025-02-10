@@ -1,6 +1,6 @@
 services:
   dual-n-back:
-    build: .
+    image: ghcr.io/cozy-space/ewmt:main
     restart: unless-stopped
     ports:
       - "3000:3000"

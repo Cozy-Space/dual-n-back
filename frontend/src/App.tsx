@@ -11,6 +11,7 @@ import { PlaygroundPage } from './pages/PlaygroundPage'
 import { InstructionPage } from './pages/InstructionPage'
 import { ImprintPage } from './pages/ImprintPage'
 import { PrivacyPage } from './pages/PrivacyPage'
+import { AdminPage } from './pages/AdminPage'
 
 const queryClient = new QueryClient()
 
@@ -29,6 +30,7 @@ function App() {
             <Route path={'/error'} element={<ErrorPage />} />
             <Route path={'/impressum'} element={<ImprintPage />} />
             <Route path={'/datenschutz'} element={<PrivacyPage />} />
+            <Route path={'/admin'} element={<AdminPage />} />
           </Routes>
         </BrowserRouter>
         <ReactQueryDevtools initialIsOpen={false} />

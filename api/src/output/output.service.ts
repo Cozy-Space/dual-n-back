@@ -45,7 +45,18 @@ export class OutputService {
     this.logger.log(`Saved statistics for ${statistics.experimenteeId}`);
   }
 
-  public appendFileInNewLine(filePath: string, content: string) {
+  getAllDataAsLines(): string[] {
+    const rootFilePath = path.join(this.directory, this.rootFileName);
+    if (!fs.existsSync(rootFilePath)) {
+      return [];
+    }
+    const content = fs.readFileSync(rootFilePath, 'utf8');
+    const lines = content.split('\n');
+    lines.shift(); // remove headline
+    return lines;
+  }
+
+  private appendFileInNewLine(filePath: string, content: string) {
     this.createFileIfNotExists(filePath);
     fs.appendFileSync(filePath, '\n' + content);
   }

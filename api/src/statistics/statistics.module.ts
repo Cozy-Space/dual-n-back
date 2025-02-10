@@ -7,5 +7,6 @@ import { OutputModule } from '../output/output.module';
   imports: [OutputModule],
   controllers: [StatisticsController],
   providers: [StatisticsService],
+  exports: [StatisticsService],
 })
 export class StatisticsModule {}

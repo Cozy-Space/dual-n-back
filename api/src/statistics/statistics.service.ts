@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { FullStatistics } from 'types/src/statistics.model';
+import { FileStatistics, FullStatistics } from 'types/src/statistics.model';
 import { OutputService } from '../output/output.service';
+import { Infos } from 'types';
 
 @Injectable()
 export class StatisticsService {
@@ -166,5 +167,50 @@ export class StatisticsService {
           0,
         )
     );
+  }
+
+  getInfos(): Infos {
+    const allDataAsLines = this.outputService.getAllDataAsLines();
+    const allDataAsStrings = allDataAsLines.map((line) => line.split(';'));
+    const fileStatistics = this.parseData(allDataAsStrings);
+
+    const totalPersons = new Set(
+      fileStatistics.map((data) => data.experimenteeId),
+    ).size;
+    const totalRecords = fileStatistics.length;
+    const averageN =
+      fileStatistics.reduce((acc, data) => acc + data.meanN, 0) /
+      fileStatistics.length;
+    const averageHighestN =
+      fileStatistics.reduce((acc, data) => acc + data.highestN, 0) /
+      fileStatistics.length;
+    return {
+      totalPersons,
+      totalRecords,
+      averageN,
+      averageHighestN,
+    };
+  }
+
+  private parseData(allDataAsStrings: string[][]): FileStatistics[] {
+    return allDataAsStrings.map((data) => {
+      return {
+        experimenteeId: data[0],
+        date: data[1],
+        amountOfPlayedBlocks: parseInt(data[2]),
+        meanN: parseFloat(data[3]),
+        highestN: parseInt(data[4]),
+        correctOverallPercent: parseFloat(data[5]),
+        correctVisualsPercent: parseFloat(data[6]),
+        correctAuditoryPercent: parseFloat(data[7]),
+        correctVisualAuditoryPercent: parseFloat(data[8]),
+        correctNoPressPercent: parseFloat(data[9]),
+        falseOverallPercent: parseFloat(data[10]),
+        falseVisualsPercent: parseFloat(data[11]),
+        falseAuditoryPercent: parseFloat(data[12]),
+        falseVisualAuditoryPercent: parseFloat(data[13]),
+        falseNoPressPercent: parseFloat(data[14]),
+      };
+    });
   }
 }

@@ -6,6 +6,7 @@ import { StaticModule } from './static.module';
 import { OutputService } from './output/output.service';
 import { OutputModule } from './output/output.module';
 import { StatisticsModule } from './statistics/statistics.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { StatisticsModule } from './statistics/statistics.module';
     StaticModule,
     OutputModule,
     StatisticsModule,
+    AdminModule,
   ],
   providers: [OutputService],
 })
