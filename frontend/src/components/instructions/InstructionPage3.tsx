@@ -4,12 +4,14 @@ interface InstructionPage3Props {
 }
 
 export function InstructionPage3(props: InstructionPage3Props) {
+  const startLK = 'Starten'
+
   return (
     <div className={'flex w-4/5 flex-col'}>
       <div className={'flex flex-row gap-2'}>
         {/*TextContainer*/}
         <div className={'flex w-2/3 flex-1 flex-col justify-center'}>
-          <p className={'mb-3 text-3xl'}>Feedback:</p>
+          <p className={'mb-3 text-3xl'}>Feedback (3/3)</p>
           <ul className={'list-outside list-disc text-xl leading-loose'}>
             <li>
               Wenn Sie <b className={'text-green-700'}>richtig</b> reagiert
@@ -21,6 +23,7 @@ export function InstructionPage3(props: InstructionPage3Props) {
               sehen Sie einen <b className={'text-red-700'}>roten</b> Smiley und
               hören einen kurzen, tiefen Ton.
             </li>
+            <li>Mit dem Klick auf &#34;{startLK}&#34; startet das Spiel.</li>
           </ul>
         </div>
         <div className={'flex w-1/3 flex-1 items-center justify-center'}>
@@ -46,7 +49,7 @@ export function InstructionPage3(props: InstructionPage3Props) {
           }
           onClick={props.onNextClick}
         >
-          Starten
+          {startLK}
         </button>
       </div>
     </div>

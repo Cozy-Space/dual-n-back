@@ -6,7 +6,7 @@ export function useStatistics() {
     blockStatistics: []
   })
   const getBlockStatistics = (blockNr: number): BlockStatistics => {
-    return statistics.blockStatistics.length > blockNr
+    return statistics.blockStatistics[blockNr] !== undefined
       ? statistics.blockStatistics[blockNr]
       : {
           n: 0,

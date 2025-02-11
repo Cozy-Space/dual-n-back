@@ -17,7 +17,6 @@ export function fillUpStatistics(
         0
       )
 
-  //remove the first block, because we never play blockNr0
   statistics.blockStatistics.shift()
   return { experimenteeId, statistics, securityToken }
 }

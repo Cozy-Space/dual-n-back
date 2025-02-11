@@ -81,6 +81,12 @@ export function GamePage() {
     return blockData.trials[currentTrialIndex]
   }, [currentTrialIndex, blockData])
 
+  const highestN = useMemo<number>(() => {
+    return statistics.blockStatistics
+      .map((sta) => sta.n)
+      .sort((a, b) => b - a)[0]
+  }, [statistics])
+
   useEffect(() => {
     if (!experimenteeId) {
       setRedirectToStart(true)
@@ -97,7 +103,9 @@ export function GamePage() {
       return
     }
     if (statisticsData) {
-      navigate(`/result?id=${experimenteeId}`, { state: { statistics } })
+      navigate(`/result?id=${experimenteeId}`, {
+        state: { highestN }
+      })
     }
   }, [statisticsStatus, statisticsData]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -109,7 +117,6 @@ export function GamePage() {
         timeoutMs = 0
         callback = () => {
           setTrialReactions([])
-          addNToStatistics(n, currentBlockNr)
           void blockRefetch()
         }
         break
@@ -123,7 +130,10 @@ export function GamePage() {
         timeoutMs = 500
         callback = () => {
           setCurrentTrialIndex(0)
-          setCurrentBlockNr((prevState) => prevState + 1)
+          setCurrentBlockNr((prevState) => {
+            addNToStatistics(n, prevState + 1)
+            return prevState + 1
+          })
           setGamePhase('queue')
         }
         break
@@ -256,9 +266,12 @@ export function GamePage() {
                 ),
                 userReaction,
                 feedback: feedback,
-                trialCorrectness: trialReactions.map((r) =>
-                  r.correct ? '✅' : '❌'
-                ),
+                trialCorrectness: trialReactions.map((r) => {
+                  if (r.trialType === 'none' && r.reactionType === 'none') {
+                    return '🟡'
+                  }
+                  return r.correct ? '✅' : '❌'
+                }),
                 blockQStatus: blockStatus,
                 nQStatus: nStatus
               }}

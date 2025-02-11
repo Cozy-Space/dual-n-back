@@ -61,6 +61,8 @@ Todo:
 - ✅ Error-Page anpassen mit Email-Adresse
 - ✅ none-none Reactions ignorieren
 - ✅Versionsnummer auf Startseite anzeigen
+- Prepare-Sound ändern oder zumindest leiser machen
+- Result Page wording anpassen
 - Versionsnummer zu 1.0.0 ändern
 - 'test' ist keine gültige id ändern xD
 - Admin-Page bauen
@@ -74,5 +76,4 @@ Todo:
     - Konfiguration
     - Credits
     - Lizenzhinweise
-- Rundenzahl auf 20 erhöhen
 

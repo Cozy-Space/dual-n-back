@@ -97,7 +97,7 @@ export function PreparationPage() {
               }
               onClick={() => {
                 navigate(`/result?id=${experimenteeId}`, {
-                  state: { statistics: 'delete this statistics thing lol' }
+                  state: { highestN: '6' }
                 })
               }}
             >

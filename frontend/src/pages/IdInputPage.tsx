@@ -65,6 +65,14 @@ export function IdInputPage() {
               className={
                 'w-full rounded-md bg-blue-500 py-2 text-white hover:bg-blue-600'
               }
+              onClick={() => navigate('/game?id=test_test_test')}
+            >
+              Weiter, aber direkt zum Spiel
+            </button>
+            <button
+              className={
+                'w-full rounded-md bg-blue-500 py-2 text-white hover:bg-blue-600'
+              }
               onClick={() => navigate('/playground')}
             >
               Playground
@@ -84,7 +92,7 @@ export function IdInputPage() {
           </DevContainer>
         </Card>
       </CenteringContainer>
-      <Footer version={'v0.9.93-alpha'} />
+      <Footer version={'v0.10.1-alpha'} />
     </>
   )
 }

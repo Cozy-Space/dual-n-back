@@ -7,27 +7,28 @@ export function InstructionPage2(props: InstructionPage2Props) {
   return (
     <div className={'flex w-4/5 flex-col'}>
       <div className={'flex flex-row gap-2'}>
-        {/*TextContainer*/}
         <div className={'flex w-2/3 flex-1 flex-col justify-center'}>
-          <p className={'mb-3 text-3xl'}>
-            Reagieren Sie pro Durchgang wie folgt:
-          </p>
+          <p className={'mb-3 text-3xl'}>Ihre Aufgabe (2/3)</p>
           <ul className={'list-outside list-disc text-xl leading-loose'}>
             <li>
-              Wenn die <b>Position</b> des Bildes übereinstimmt, drücken Sie den
-              Knopf mit dem <b>Augen-Symbol</b>.
+              Wenn ausschließlich die <b>Position</b> des Gesichts
+              übereinstimmt, drücken Sie den Knopf mit dem <b>Augen-Symbol</b>.
             </li>
             <li>
-              Wenn das gehörte <b>Wort</b> übereinstimmt, drücken Sie den Knopf
-              mit dem <b>Lautsprecher-Symbol</b>.
+              Wenn ausschließlich das gesprochene <b>Wort</b> übereinstimmt,
+              drücken Sie den Knopf mit dem <b>Lautsprecher-Symbol</b>.
             </li>
             <li>
-              Wenn <b>beides</b>, also sowohl die Position des Bildes als auch
-              das gehörte Wort, übereinstimmt, drücken Sie den Knopf mit{' '}
+              Wenn <b>beides</b>, also sowohl die Position des Gesichts als auch
+              das gesprochene Wort, übereinstimmt, drücken Sie den Knopf mit{' '}
               <b>beiden Symbolen</b>.
             </li>
             <li>
               Wenn <b>nichts</b> übereinstimmt, drücken Sie <b>keinen</b> Knopf.
+            </li>
+            <li>
+              Reagieren Sie immer direkt, nachdem Ihnen das Bild angezeigt wurde
+              und Sie das Wort gehört haben.
             </li>
           </ul>
         </div>

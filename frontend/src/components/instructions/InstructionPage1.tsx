@@ -6,18 +6,16 @@ export function InstructionPage1(props: InstructionPage1Props) {
   return (
     <div className={'flex w-4/5 flex-col'}>
       <div className={'flex flex-row gap-2'}>
-        {/*TextContainer*/}
         <div className={'flex w-2/3 flex-1 flex-col justify-center'}>
-          <p className={'mb-3 text-3xl'}>Anleitung:</p>
+          <p className={'mb-3 text-3xl'}>Anleitung (1/3)</p>
           <ul className={'list-outside list-disc text-xl leading-loose'}>
             <li>
-              Im Folgenden werden Sie ein 4 mal 4 Feld mit weißen Quadraten
+              Im Folgenden werden Sie ein 4x4 großes Feld mit weißen Quadraten
               sehen.
             </li>
             <li>
-              Sie werden in aufeinander folgenden Durchgängen jeweils ein
-              Gesicht und ein Geräusch, in Form eines gesprochenen Wortes,
-              hören.
+              Sie werden in aufeinander folgenden Durchgängen jeweils ein Bild
+              eines Gesichts sehen und ein gesprochenes Wort hören.
             </li>
             <li>
               Sie sollen auf die <b>Positionen</b> der Gesichter und auf die{' '}
@@ -26,8 +24,12 @@ export function InstructionPage1(props: InstructionPage1Props) {
             <li>
               Ihre Aufgabe ist es, zu erkennen, ob die Position des Gesichtes
               des aktuellen Durchgangs mit der Position des Gesichtes aus dem
-              vorherigen Durchgang übereinstimmt. Das Gleiche gilt für das
-              gesprochene Wort.
+              vorherigen Durchgang übereinstimmt.
+            </li>
+            <li>
+              Gleichzeitig sollen Sie auch erkennen, ob das gesprochene Wort des
+              aktuellen Durchgangs mit dem gesprochenen Wort des vorherigen
+              Durchgangs übereinstimmt.
             </li>
             <li>Sie erhalten regelmäßig neue Anweisungen.</li>
           </ul>
