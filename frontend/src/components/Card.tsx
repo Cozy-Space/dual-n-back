@@ -20,3 +20,17 @@ export function Card(props: CardProps) {
     </div>
   )
 }
+
+interface StatsCardProps {
+  value: string
+  description: string
+}
+
+export function StatsCard(props: StatsCardProps) {
+  return (
+    <Card className={'flex flex-col justify-center text-center'}>
+      <span className="pr-1 text-3xl font-bold italic">{props.value}</span>
+      <span className="font-semibold text-gray-400">{props.description}</span>
+    </Card>
+  )
+}

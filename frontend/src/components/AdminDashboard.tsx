@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { Card } from './Card'
+import { StatsCard } from './Card'
 import { Infos } from 'types'
 import { useAdminInfosQuery } from '../queries/UseAdminInfosQuery'
 
@@ -42,27 +42,23 @@ export function AdminDashboard(props: AdminDashboardProps) {
 
   return (
     <div className="grid w-full max-w-3xl gap-6">
-      {/* Stats Overview */}
-      <div className="grid grid-cols-4 gap-4">
-        <Card className="p-4">
-          <h3 className="text-xl font-bold">Total Persons</h3>
-          <p className="mt-2 text-2xl">{totalPersons}</p>
-        </Card>
-
-        <Card className="p-4">
-          <h3 className="text-xl font-bold">Total Records</h3>
-          <p className="mt-2 text-2xl">{totalRecords}</p>
-        </Card>
-
-        <Card className="p-4">
-          <h3 className="text-xl font-bold">Average N</h3>
-          <p className="mt-2 text-2xl">{averageN}</p>
-        </Card>
-
-        <Card className="p-4">
-          <h3 className="text-xl font-bold">Average Highest N</h3>
-          <p className="mt-2 text-2xl">{averageHighestN}</p>
-        </Card>
+      <div className="grid w-full max-w-4xl grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4">
+        <StatsCard
+          value={totalRecords?.toString() || 'Loading...'}
+          description={'Datensätze'}
+        />
+        <StatsCard
+          value={totalPersons?.toString() || 'Loading...'}
+          description={'teilgenommene ProbandInnen'}
+        />
+        <StatsCard
+          value={averageN?.toString() || 'Loading...'}
+          description={'ist das durchschnittliche N'}
+        />
+        <StatsCard
+          description={'ist das durchschnittlich höchste N'}
+          value={averageHighestN?.toString() || 'Loading...'}
+        />
       </div>
 
       {/* Search Section */}
