@@ -184,11 +184,13 @@ export class StatisticsService {
     const averageHighestN =
       fileStatistics.reduce((acc, data) => acc + data.highestN, 0) /
       fileStatistics.length;
+    const highestN = Math.max(...fileStatistics.map((data) => data.highestN));
     return {
       totalPersons,
       totalRecords,
       averageN,
       averageHighestN,
+      highestN,
     };
   }
 

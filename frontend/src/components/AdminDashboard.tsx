@@ -29,20 +29,26 @@ export function AdminDashboard(props: AdminDashboardProps) {
     if (!adminInfosData) return undefined
     return (adminInfosData as unknown as Infos).averageHighestN
   }, [adminInfosData])
+  const highestN = useMemo<number | undefined>(() => {
+    if (!adminInfosData) return undefined
+    return (adminInfosData as unknown as Infos).highestN
+  }, [adminInfosData])
   const mockDatabase: Record<string, string> = {
     '1': 'Person 1: Details about person 1.',
     '2': 'Person 2: Details about person 2.',
     '3': 'Person 3: Details about person 3.'
   }
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSearch = (
+    e: React.FormEvent<HTMLFormElement> | React.FormEvent<HTMLInputElement>
+  ) => {
     e.preventDefault()
     setDetails(mockDatabase[searchId] || 'No details found for this ID.')
   }
 
   return (
-    <div className="grid w-full max-w-3xl gap-6">
-      <div className="grid w-full max-w-4xl grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4">
+    <div className="grid w-full max-w-5xl gap-6">
+      <div className="grid w-full max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-5">
         <StatsCard
           value={totalRecords?.toString() || 'Loading...'}
           description={'Datensätze'}
@@ -59,6 +65,10 @@ export function AdminDashboard(props: AdminDashboardProps) {
           description={'ist das durchschnittlich höchste N'}
           value={averageHighestN?.toString() || 'Loading...'}
         />
+        <StatsCard
+          description={'ist das höchste erreichte N'}
+          value={highestN?.toString() || 'Loading...'}
+        />
       </div>
 
       {/* Search Section */}
@@ -69,6 +79,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
             placeholder="Enter ID"
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
+            onSubmit={handleSearch}
             className={'flex-1 rounded-md bg-blue-100 p-2'}
           />
           <button

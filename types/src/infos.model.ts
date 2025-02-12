@@ -3,4 +3,5 @@ export type Infos = {
   totalRecords: number;
   averageN: number;
   averageHighestN: number;
+  highestN: number;
 };
