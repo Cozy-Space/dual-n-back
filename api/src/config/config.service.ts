@@ -5,7 +5,7 @@ import { DayConfig, GameConfig } from 'types';
 export class ConfigService {
   public getDayConfig(): DayConfig {
     return {
-      amount_of_blocks_to_play: 2, // default: 15
+      amount_of_blocks_to_play: 15, // default: 15
     };
   }
 
