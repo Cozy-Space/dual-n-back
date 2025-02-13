@@ -52,7 +52,7 @@ Todo:
 - ✅ Ending-Page bauen
     - ✅ Vielen Dank für Ihre Teilnahme an dieser Aufgabe! Sie können das Fenster jetzt schließen.
 - ✅ Logos einbauen
-- Tester:innen-Feedback einarbeiten
+- ✅ Tester:innen-Feedback einarbeiten
     - ✅ Instruktionen → Typos und Textänderungen
     - ✅ Instruktionen → "Roter Smiley, zwei tiefe Töne"
     - ✅ Instruktionen, Seite 1 → Screenshot mit angezeigtem Cue anzeigen
@@ -61,14 +61,14 @@ Todo:
 - ✅ Error-Page anpassen mit Email-Adresse
 - ✅ none-none Reactions ignorieren
 - ✅Versionsnummer auf Startseite anzeigen
-- Prepare-Sound ändern oder zumindest leiser machen
-- Result Page wording anpassen
+- ✅ Admin-Page bauen
+  - ✅ sehen, welche participant IDs schon wie oft gespielt haben
+- ✅ IdInput vorausfüllbar machen durch URL-Parameter
+- ✅ 'test' ist keine gültige id ändern xD
+- ✅ Result Page wording anpassen
+- ✅ Prepare-Sound ändern oder zumindest leiser machen
 - Versionsnummer zu 1.0.0 ändern
-- 'test' ist keine gültige id ändern xD
-- Admin-Page bauen
-    - sehen, welche participant IDs schon wie oft gespielt haben
 - Bildaufschlüsselung
-- IdInput vorausfüllbar machen durch URL-Parameter
 - README.md
     - Beschreibung
     - Screenshots

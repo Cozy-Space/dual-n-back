@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Card } from '../components/Card'
 import { CenteringContainer } from '../components/CenteringContainer'
 import { SoundPlayer } from '../components/SoundPlayer'
-import BahnSound from 'assets/bahn.mp3'
+import PrepareSound from 'assets/jingle.mp3'
 import { PencilIcon } from '@heroicons/react/20/solid'
 import { useConfigQuery } from '../queries/ConfigQuery'
 import { DevContainer } from '../components/DevContainer'
@@ -76,7 +76,7 @@ export function PreparationPage() {
 
             <SoundPlayer
               buttonText={'Test-Ton abspielen'}
-              soundFile={BahnSound}
+              soundFile={PrepareSound}
               callback={setAudioPlayed}
             />
           </div>

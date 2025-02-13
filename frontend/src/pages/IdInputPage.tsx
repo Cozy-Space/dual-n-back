@@ -41,7 +41,7 @@ export function IdInputPage() {
               value={experimenteeId}
               onChange={(e) => setExperimenteeId(e.target.value)}
               className="mb-4 w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="'test' ist keine gültige id ;)"
+              placeholder="z.B. bebo2103"
             />
             <button
               type="submit"
