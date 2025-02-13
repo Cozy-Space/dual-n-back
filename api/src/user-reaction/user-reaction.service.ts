@@ -25,12 +25,6 @@ export class UserReactionService {
       newN++;
     }
 
-    console.log(
-      reactions.filter(
-        (reaction) =>
-          !(reaction.trialType === 'none' && reaction.reactionType === 'none'), // filter out (trialType: none => reactionType: none) reactions
-      ),
-    );
     const shouldDowngrade = this.hasConsecutiveElements(
       reactions // use the first n reactions for downgrading
         .filter(
