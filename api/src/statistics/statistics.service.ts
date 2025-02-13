@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { FileStatistics, FullStatistics } from 'types/src/statistics.model';
 import { OutputService } from '../output/output.service';
-import { Infos } from 'types';
+import { DetailedInfos, Infos } from 'types';
 
 @Injectable()
 export class StatisticsService {
@@ -188,6 +188,34 @@ export class StatisticsService {
     return {
       totalPersons,
       totalRecords,
+      averageN,
+      averageHighestN,
+      highestN,
+    };
+  }
+
+  getDetailedInfos(experimenteeId: string): DetailedInfos {
+    const experimenteeData =
+      this.outputService.getDataForExperimentee(experimenteeId);
+    if (experimenteeData.length === 0) {
+      return undefined;
+    }
+    const experimenteeDataAsStrings = experimenteeData.map((line) =>
+      line.split(';'),
+    );
+    const fileStatistics = this.parseData(experimenteeDataAsStrings);
+    const datez = fileStatistics.map((data) => data.date);
+    const dates = [...datez, ...datez, ...datez, ...datez, ...datez];
+    const averageN =
+      fileStatistics.reduce((acc, data) => acc + data.meanN, 0) /
+      fileStatistics.length;
+    const averageHighestN =
+      fileStatistics.reduce((acc, data) => acc + data.highestN, 0) /
+      fileStatistics.length;
+    const highestN = Math.max(...fileStatistics.map((data) => data.highestN));
+    return {
+      experimenteeId,
+      dates,
       averageN,
       averageHighestN,
       highestN,

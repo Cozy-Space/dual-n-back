@@ -5,14 +5,16 @@ interface CardProps {
   children?: React.ReactNode
   onClick?: () => void
   className?: string | undefined
+  unleashWidth?: boolean
 }
 
 export function Card(props: CardProps) {
   return (
     <div
       className={classNames(
-        'w-full max-w-sm rounded-lg bg-white p-6 shadow-md',
-        props.className
+        'w-full rounded-lg bg-white p-6 shadow-md',
+        props.className,
+        props.unleashWidth ? '' : 'max-w-sm'
       )}
       onClick={props.onClick}
     >

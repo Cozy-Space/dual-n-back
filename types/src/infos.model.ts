@@ -5,3 +5,11 @@ export type Infos = {
   averageHighestN: number;
   highestN: number;
 };
+
+export type DetailedInfos = {
+  experimenteeId: string;
+  dates: string[];
+  averageN: number;
+  averageHighestN: number;
+  highestN: number;
+}

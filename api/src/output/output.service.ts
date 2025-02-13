@@ -56,6 +56,21 @@ export class OutputService {
     return lines;
   }
 
+  getDataForExperimentee(experimenteeId: string): string[] {
+    const userFilePath = path.join(
+      this.directory,
+      this.sanitizeUserId(experimenteeId),
+      this.sanitizeUserId(experimenteeId) + '.txt',
+    );
+    if (!fs.existsSync(userFilePath)) {
+      return [];
+    }
+    const content = fs.readFileSync(userFilePath, 'utf8');
+    const lines = content.split('\n');
+    lines.shift(); // remove headline
+    return lines;
+  }
+
   private appendFileInNewLine(filePath: string, content: string) {
     this.createFileIfNotExists(filePath);
     fs.appendFileSync(filePath, '\n' + content);

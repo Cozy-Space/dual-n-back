@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { StatisticsService } from '../statistics/statistics.service';
-import { Infos } from 'types';
+import { DetailedInfos, Infos } from 'types';
 
 @Injectable()
 export class AdminService {
@@ -16,6 +16,13 @@ export class AdminService {
       return undefined;
     }
     return this.statisticsService.getInfos();
+  }
+
+  getDetailedInfos(password: string, experimenteeId: string): DetailedInfos {
+    if (!this.isPasswordCorrect(password) || !experimenteeId) {
+      return undefined;
+    }
+    return this.statisticsService.getDetailedInfos(experimenteeId);
   }
 
   isPasswordCorrect(password: string): boolean {
