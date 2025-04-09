@@ -204,8 +204,7 @@ export class StatisticsService {
       line.split(';'),
     );
     const fileStatistics = this.parseData(experimenteeDataAsStrings);
-    const datez = fileStatistics.map((data) => data.date);
-    const dates = [...datez, ...datez, ...datez, ...datez, ...datez];
+    const dates = fileStatistics.map((data) => data.date);
     const averageN =
       fileStatistics.reduce((acc, data) => acc + data.meanN, 0) /
       fileStatistics.length;
