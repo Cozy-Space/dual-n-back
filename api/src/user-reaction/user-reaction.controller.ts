@@ -15,12 +15,6 @@ export class UserReactionController {
   private readonly logger = new Logger(UserReactionController.name);
   @Inject() userReactionService: UserReactionService;
 
-  // OUTDATED: curl -X POST "localhost:3000/api/user_reaction.post?n=2" -H "Content-Type: application/json" --data '{"reactions":[{"correct": false}, {"correct": false}, {"correct": false}, {"correct": false}, {"correct": false}]}'
-  // -> 1
-  // OUTDATED: curl -X POST "localhost:3000/api/user_reaction.post?n=2" -H "Content-Type: application/json" --data '{"reactions":[{"correct": true}, {"correct": false}, {"correct": true}, {"correct": false}, {"correct": true}]}'
-  // -> 2
-  // OUTDATED: curl -X POST "localhost:3000/api/user_reaction.post?n=2" -H "Content-Type: application/json" --data '{"reactions":[{"correct": true}, {"correct": false}, {"correct": true}, {"correct": true}, {"correct": true}]}'
-  // -> 3
   @Post('user_reaction.post')
   getNewN(@Query('n') n: number, @Body('reactions') reactions: Reaction[]) {
     if (
@@ -37,9 +31,9 @@ export class UserReactionController {
     ) {
       throw new BadRequestException('n and reactions are required');
     }
-    this.logger.log(
-      `Get new N for used-n=${n} and reactions=${JSON.stringify(reactions)}`,
-    );
-    return this.userReactionService.getNFromReaction(n, reactions);
+    this.logger.log(`Get new N. Old-N:${n}`);
+    const newN = this.userReactionService.getNFromReaction(n, reactions);
+    this.logger.log(`Got new N. New N: ${newN}`);
+    return newN;
   }
 }

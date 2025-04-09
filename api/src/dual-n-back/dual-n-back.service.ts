@@ -9,7 +9,6 @@ export class DualNBackService {
 
   public createBlock(n: number): Block {
     const config = this.configService.getGameConfig();
-    this.logger.log(`Using config: ${JSON.stringify(config)}`);
 
     const trials: Trial[] = this.createTrials(n);
     const hitArray: TrialType[] = this.createHitArray(
