@@ -1,11 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import 'dotenv/config';
 import { DayConfig, GameConfig } from 'types';
+import * as process from 'node:process';
 
 @Injectable()
 export class ConfigService {
+  private readonly logger = new Logger(ConfigService.name);
+
   public getDayConfig(): DayConfig {
+    const amountOfBlocksToPlay = process.env.AMOUNT_OF_BLOCKS_TO_PLAY || '15';
+
     return {
-      amount_of_blocks_to_play: 15, // default: 15
+      amount_of_blocks_to_play: parseInt(amountOfBlocksToPlay), // default: 15
     };
   }
 
