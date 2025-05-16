@@ -4,5 +4,7 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
+    environment:
+      AMOUNT_OF_BLOCKS_TO_PLAY: "15"
     volumes:
-        - ./userdata:/usr/src/app/userdata
+      - ./userdata:/usr/src/app/userdata
